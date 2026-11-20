@@ -1,0 +1,25 @@
+{
+  "icon": {
+    "item": "minecraft:blaze_powder",
+    "color": 16755200
+  },
+  "range": {
+    "deity": "iss:iron",
+    "minlevel": -10,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:spell_cast",
+    "spell": "irons_spellbooks:firebolt"
+  },
+  "action": [
+    {
+      "type": "rpggods:favor",
+      "deity": "iss:iron",
+      "amount": 5
+    }
+  ],
+  "cooldown_category": "iss:spell_cast",
+  "cooldown": 0,
+  "positive": true
+}

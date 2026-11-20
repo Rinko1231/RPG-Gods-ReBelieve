@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": "minecraft:blue_ice",
+    "color": 11184895
+  },
+  "range": {
+    "deity": "iss:iron",
+    "minlevel": -10,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:spell_damage",
+    "spell": "irons_spellbooks:icicle",
+    "min_amount": 10
+  },
+  "action": [
+    {
+      "type": "rpggods:favor",
+      "deity": "iss:iron",
+      "amount": 2
+    }
+  ],
+  "cooldown_category": "iss:spell_damage",
+  "cooldown": 0,
+  "positive": true
+}

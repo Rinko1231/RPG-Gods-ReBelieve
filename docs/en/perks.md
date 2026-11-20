@@ -96,6 +96,9 @@ nested in `and` / `or` / `not`.
 | `rpggods:combat_start` | `entity`?: entity holder set | Player entered combat (optionally with one of these entities). |
 | `rpggods:ritual` | `item`: item predicate | The item burned in front of the altar matches. |
 | `rpggods:level_change` | `direction`: `level_up`/`level_down`, `deity`?: ID | Player's favor level changed. |
+| `rpggods:spell_cast` | `spell`?: spell ID | A spell was cast (requires Iron's Spellbooks). |
+| `rpggods:spell_damage` | `spell`?: spell ID, `min_amount`?: int, `max_amount`?: int | A spell dealt damage; amount is the pre-armor damage. |
+| `rpggods:spell_heal` | `min_amount`?: int, `max_amount`?: int | A spell healed; amount is the healed amount. |
 
 #### `rpggods:location`
 
@@ -128,6 +131,34 @@ Used by `rpggods:item` and `rpggods:ritual`:
 Fields: `items` (ID or list), `tag` (tag ID **without** `#`), `count`,
 `durability`, `enchantments`, `stored_enchantments`, `potion`, `nbt` (SNBT
 string).
+
+#### Spell conditions
+
+`rpggods:spell_cast`, `rpggods:spell_damage` and `rpggods:spell_heal` are fired by
+the optional Iron's Spellbooks integration. They do nothing when Iron's
+Spellbooks is not installed.
+
+```json
+"condition": { "type": "rpggods:spell_cast", "spell": "irons_spellbooks:firebolt" }
+"condition": { "type": "rpggods:spell_damage", "spell": "irons_spellbooks:icicle", "min_amount": 5, "max_amount": 9 }
+"condition": { "type": "rpggods:spell_damage", "min_amount": 10 }
+"condition": { "type": "rpggods:spell_heal", "min_amount": 4 }
+```
+
+* `spell` is optional and limits the condition to one spell id.
+* `min_amount` / `max_amount` are optional and compare against the event amount
+  (spell damage or healing, in half hearts). Damage uses the pre-armor amount
+  reported by Iron's Spellbooks' damage event.
+* The perks are ordinary data pack perks, so they show up in the favor GUI's
+  **Perks** tab with their condition and action tooltips. A `rpggods:favor`
+  action is what actually grants favor.
+* Cooldowns are controlled by the perk's `cooldown` / `cooldown_category`
+  fields. Set `"cooldown": 0` for unlimited testing; use one category per event
+  type so a cast does not block damage/heal perks.
+* There is no `maxuses`-style cap for spell events; use the perk cooldown (or a
+  `chance` below `1.0`) as a throttle.
+* Per-hit thresholds are supported. A cumulative “every X total damage” design
+  would need a persistent counter and is not built in.
 
 ## Actions
 

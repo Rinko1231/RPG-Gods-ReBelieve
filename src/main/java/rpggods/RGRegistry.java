@@ -81,6 +81,9 @@ import rpggods.data.perk.condition.NearAltarCondition;
 import rpggods.data.perk.condition.PoseCondition;
 import rpggods.data.perk.condition.RandomTickCondition;
 import rpggods.data.perk.condition.RitualCondition;
+import rpggods.data.perk.condition.SpellCastCondition;
+import rpggods.data.perk.condition.SpellDamageCondition;
+import rpggods.data.perk.condition.SpellHealCondition;
 import rpggods.data.perk.condition.FalseCondition;
 import rpggods.data.perk.condition.LocationCondition;
 import rpggods.data.perk.condition.NotCondition;
@@ -391,6 +394,11 @@ public final class RGRegistry {
         public static final RegistryObject<Codec<CombatStartCondition>> COMBAT_START = PERK_CONDITION_TYPES.register("combat_start", () -> CombatStartCondition.CODEC);
         public static final RegistryObject<Codec<RitualCondition>> RITUAL = PERK_CONDITION_TYPES.register("ritual", () -> RitualCondition.CODEC);
         public static final RegistryObject<Codec<FavorLevelChangeCondition>> FAVOR_LEVEL_CHANGE = PERK_CONDITION_TYPES.register("level_change", () -> FavorLevelChangeCondition.CODEC);
+
+        // optional Iron's Spellbooks conditions, registered last to keep the existing ids stable
+        public static final RegistryObject<Codec<SpellCastCondition>> SPELL_CAST = PERK_CONDITION_TYPES.register("spell_cast", () -> SpellCastCondition.CODEC);
+        public static final RegistryObject<Codec<SpellDamageCondition>> SPELL_DAMAGE = PERK_CONDITION_TYPES.register("spell_damage", () -> SpellDamageCondition.CODEC);
+        public static final RegistryObject<Codec<SpellHealCondition>> SPELL_HEAL = PERK_CONDITION_TYPES.register("spell_heal", () -> SpellHealCondition.CODEC);
 
     }
 

@@ -6,6 +6,7 @@
 
 package rpggods.compat;
 
+import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.api.events.SpellDamageEvent;
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
@@ -14,11 +15,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import rpggods.PerkDispatcher;
+import rpggods.RGRegistry;
 import rpggods.RPGGods;
-import rpggods.data.deity.Deity;
-import rpggods.data.favor.FavorLevel;
 import rpggods.data.favor.IFavor;
-import rpggods.util.FavorChangedEvent;
+import rpggods.data.perk.condition.PerkCondition;
 
 /**
  * Optional compatibility with Iron's Spellbooks.
@@ -26,17 +27,13 @@ import rpggods.util.FavorChangedEvent;
  * This class is only loaded when {@code irons_spellbooks} is present, so the mod still
  * runs when Iron's Spellbooks is not installed.
  * <p>
- * Casting a spell, dealing spell damage and spell healing all grant favor with the test
- * deity {@code iss:iron}. If that deity is not registered the events are ignored.
+ * Spell events are turned into data pack perks: the event dispatches perks whose
+ * condition is {@code rpggods:spell_cast}, {@code rpggods:spell_damage} or
+ * {@code rpggods:spell_heal}. The perk itself decides what happens (for example a
+ * {@code rpggods:favor} action), so favor gain, cooldowns and thresholds are fully
+ * data-driven and visible in the favor GUI.
  */
 public final class IronSpellsCompat {
-
-    /** The deity that gains favor from spell casting */
-    public static final ResourceLocation DEITY = new ResourceLocation("iss", "iron");
-
-    private static final long CAST_FAVOR = 10L;
-    private static final long DAMAGE_FAVOR = 4L;
-    private static final long HEAL_FAVOR = 8L;
 
     private IronSpellsCompat() {
     }
@@ -50,8 +47,12 @@ public final class IronSpellsCompat {
 
     @SubscribeEvent
     public static void onSpellCast(final SpellOnCastEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            addFavor(player, CAST_FAVOR);
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        final ResourceLocation spell = ResourceLocation.tryParse(event.getSpellId());
+        if (spell != null) {
+            dispatch(player, spell, 0.0D, RGRegistry.PerkConditionReg.SPELL_CAST.get());
         }
     }
 
@@ -65,34 +66,39 @@ public final class IronSpellsCompat {
             caster = event.getSpellDamageSource().getDirectEntity();
         }
         if (caster instanceof ServerPlayer player) {
-            addFavor(player, DAMAGE_FAVOR);
+            dispatch(player, event.getSpellDamageSource().spell().getSpellResource(), event.getAmount(),
+                    RGRegistry.PerkConditionReg.SPELL_DAMAGE.get());
         }
     }
 
     @SubscribeEvent
     public static void onSpellHeal(final SpellHealEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            addFavor(player, HEAL_FAVOR);
+            dispatch(player, null, event.getHealAmount(), RGRegistry.PerkConditionReg.SPELL_HEAL.get());
         }
     }
 
-    private static void addFavor(final ServerPlayer player, final long amount) {
-        if (player.level().isClientSide() || player.isSpectator() || player.isCreative()) {
-            return;
-        }
-        // only grant favor when the deity exists and is enabled
-        final Deity deity = Deity.getRegistry(player.level().registryAccess()).get(DEITY);
-        if (deity == null || !deity.isEnabled() || !deity.isUnlocked()) {
+    /**
+     * Runs the perks with the given condition for this player.
+     *
+     * @param player    the server player
+     * @param spell     the spell id, or null when the event does not expose one
+     * @param amount    the event amount (damage, healing, ...)
+     * @param condition the perk condition codec to dispatch
+     */
+    private static void dispatch(final ServerPlayer player, final ResourceLocation spell, final double amount,
+                                 final Codec<? extends PerkCondition> condition) {
+        if (player.level().isClientSide()) {
             return;
         }
         final IFavor favor = RPGGods.getFavor(player).orElse(null);
         if (favor == null || !favor.isEnabled()) {
             return;
         }
-        final FavorLevel favorLevel = favor.getFavor(DEITY);
-        if (!favorLevel.isEnabled()) {
-            return;
+        final PerkDispatcher.Invoker invoker = PerkDispatcher.invoke(player, favor).withAmount(amount);
+        if (spell != null) {
+            invoker.withData(spell);
         }
-        favorLevel.addFavor(player, DEITY, amount, FavorChangedEvent.Source.PERK);
+        invoker.runForCondition(condition);
     }
 }

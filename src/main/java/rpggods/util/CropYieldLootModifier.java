@@ -92,7 +92,7 @@ public class CropYieldLootModifier extends LootModifier {
         Collections.shuffle(perks);
         // attempt to run all crop yield perks until one is successful
         for(Perk perk : perks) {
-            if(PerkDispatcher.runPerk(perk, player, favor, Optional.empty(), Optional.of(entity), Optional.empty(), Optional.of(block), Optional.empty())) {
+            if(PerkDispatcher.runPerk(perk, player, favor, Optional.empty(), Optional.of(entity), Optional.empty(), Optional.of(block), Optional.empty(), Optional.empty())) {
                 // determine bonus yield
                 int bonusYield = 0;
                 for(PerkAction action : perk.getActions()) {

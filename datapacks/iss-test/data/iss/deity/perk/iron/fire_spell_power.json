@@ -18,12 +18,6 @@
       "attribute": "irons_spellbooks:fire_spell_power",
       "amount": 0.3,
       "operation": "add_multiplied_base"
-    },
-    {
-      "type": "rpggods:attribute",
-      "attribute": "irons_spellbooks:fire_magic_power",
-      "amount": 0.3,
-      "operation": "add_multiplied_base"
     }
   ],
   "positive": true

@@ -88,7 +88,7 @@ public class AutosmeltAndUnsmeltLootModifier extends LootModifier {
         Collections.shuffle(autosmeltPerks);
         // attempt to run all autosmelt perks until one is successful
         for(Perk perk : autosmeltPerks) {
-            if(PerkDispatcher.runPerk(perk, player, favor, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())) {
+            if(PerkDispatcher.runPerk(perk, player, favor, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())) {
                 generatedLoot.replaceAll(i -> smelt(i, context));
                 return generatedLoot;
             }
@@ -97,7 +97,7 @@ public class AutosmeltAndUnsmeltLootModifier extends LootModifier {
         Collections.shuffle(unsmeltPerks);
         // attempt to run all unsmelt perks until one is successful
         for(Perk perk : unsmeltPerks) {
-            if(PerkDispatcher.runPerk(perk, player, favor, Optional.empty(), Optional.of(entity), Optional.empty(), Optional.of(block), Optional.empty())) {
+            if(PerkDispatcher.runPerk(perk, player, favor, Optional.empty(), Optional.of(entity), Optional.empty(), Optional.of(block), Optional.empty(), Optional.empty())) {
                 generatedLoot.replaceAll(i -> unsmelt(i, oreToStoneMap));
                 return generatedLoot;
             }

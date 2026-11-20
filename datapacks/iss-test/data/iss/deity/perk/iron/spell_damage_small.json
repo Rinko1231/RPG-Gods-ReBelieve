@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": "minecraft:packed_ice",
+    "color": 11184895
+  },
+  "range": {
+    "deity": "iss:iron",
+    "minlevel": -10,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:spell_damage",
+    "spell": "irons_spellbooks:icicle",
+    "min_amount": 5,
+    "max_amount": 9
+  },
+  "action": [
+    {
+      "type": "rpggods:favor",
+      "deity": "iss:iron",
+      "amount": 1
+    }
+  ],
+  "cooldown_category": "iss:spell_damage",
+  "cooldown": 0,
+  "positive": true
+}

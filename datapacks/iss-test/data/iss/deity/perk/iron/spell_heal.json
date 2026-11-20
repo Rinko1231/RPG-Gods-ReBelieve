@@ -1,0 +1,25 @@
+{
+  "icon": {
+    "item": "minecraft:glistering_melon_slice",
+    "color": 16711824
+  },
+  "range": {
+    "deity": "iss:iron",
+    "minlevel": -10,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:spell_heal",
+    "min_amount": 1
+  },
+  "action": [
+    {
+      "type": "rpggods:favor",
+      "deity": "iss:iron",
+      "amount": 2
+    }
+  ],
+  "cooldown_category": "iss:spell_heal",
+  "cooldown": 0,
+  "positive": true
+}

@@ -79,6 +79,8 @@ public final class PerkDispatcher {
         private Optional<ItemStack> itemStack;
         /** The block state, if there is a block state associated with the {@link Perk} **/
         private Optional<BlockState> blockState;
+        /** A numeric amount associated with the event, if any **/
+        private Optional<Double> amount;
         /** The event that triggered the {@link Perk}, if any **/
         private Optional<? extends Event> event;
 
@@ -89,6 +91,7 @@ public final class PerkDispatcher {
             this.entity = Optional.empty();
             this.itemStack = Optional.empty();
             this.blockState = Optional.empty();
+            this.amount = Optional.empty();
             this.event = Optional.empty();
         }
 
@@ -117,6 +120,11 @@ public final class PerkDispatcher {
             return this;
         }
 
+        public Invoker withAmount(final double amount) {
+            this.amount = Optional.of(amount);
+            return this;
+        }
+
         public boolean runForCondition(final Codec<? extends PerkCondition> type) {
             // validate favor
             if(!favor.isEnabled()) {
@@ -140,7 +148,7 @@ public final class PerkDispatcher {
             Collections.shuffle(shuffledPerks);
             // run each perk
             for (Perk perk : shuffledPerks) {
-                success |= PerkDispatcher.runPerk(perk, player, favor, data, entity, itemStack, blockState, event);
+                success |= PerkDispatcher.runPerk(perk, player, favor, data, entity, itemStack, blockState, event, amount);
             }
             return success;
         }
@@ -168,7 +176,7 @@ public final class PerkDispatcher {
             Collections.shuffle(shuffledPerks);
             // run each perk
             for (Perk perk : shuffledPerks) {
-                success |= runPerk(perk, player, favor, data, entity, itemStack, blockState, event);
+                success |= runPerk(perk, player, favor, data, entity, itemStack, blockState, event, amount);
             }
             return success;
         }
@@ -344,7 +352,7 @@ public final class PerkDispatcher {
     public static boolean runPerk(final Perk perk, final ServerPlayer player, final IFavor favor,
                                   final Optional<ResourceLocation> data, final Optional<Entity> entity,
                                   final Optional<ItemStack> itemStack, final Optional<BlockState> blockState,
-                                  final Optional<? extends Event> event) {
+                                  final Optional<? extends Event> event, final Optional<Double> amount) {
         // validate favor range
         if(!perk.getRange().isInRange(favor)) {
             return false;
@@ -358,7 +366,7 @@ public final class PerkDispatcher {
             return false;
         }
         // validate condition
-        final PerkConditionContext conditionContext = new PerkConditionContext(perk.getDeity(), player, favor, data, entity, itemStack, blockState);
+        final PerkConditionContext conditionContext = new PerkConditionContext(perk.getDeity(), player, favor, data, entity, itemStack, blockState, amount);
         if (!perk.getCondition().test(conditionContext)) {
             return false;
         }
@@ -452,7 +460,7 @@ public final class PerkDispatcher {
         // attempt to run all perks
         boolean success = false;
         for(Perk perk : ritualPerks.values()) {
-            success |= runPerk(perk, player, favor, Optional.empty(), Optional.of(altar), Optional.of(item.getItem()), Optional.empty(), Optional.empty());
+            success |= runPerk(perk, player, favor, Optional.empty(), Optional.of(altar), Optional.of(item.getItem()), Optional.empty(), Optional.empty(), Optional.empty());
         }
         // send feedback when ritual resulted in a patron being assigned
         if(success && favor.getPatron().isPresent()) {

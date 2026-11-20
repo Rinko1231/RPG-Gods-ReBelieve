@@ -110,9 +110,13 @@ is loaded:
   attribute is stored as a `ResourceLocation` and resolved at runtime, so a data
   pack that mentions `irons_spellbooks:fire_spell_power` still loads (and simply
   does nothing) when Iron's Spellbooks is not installed.
-* `rpggods.compat.IronSpellsCompat` — listens to `SpellOnCastEvent`,
-  `SpellDamageEvent` and `SpellHealEvent` and grants favor with `iss:iron`.
-  The class is only loaded when `ModList` reports `irons_spellbooks` as loaded.
+* `rpggods.compat.IronSpellsCompat` — turns `SpellOnCastEvent`,
+  `SpellDamageEvent` and `SpellHealEvent` into the data pack conditions
+  `rpggods:spell_cast`, `rpggods:spell_damage` and `rpggods:spell_heal` (with
+  optional spell id and damage/heal amount thresholds). The perk itself decides
+  the effect, so favor gain, cooldowns and thresholds are data-driven and show
+  up in the favor GUI's Perks tab. The class is only loaded when `ModList`
+  reports `irons_spellbooks` as loaded.
 
 `build.gradle` declares the CurseForge artifacts as `compileOnly` +
 `runtimeOnly`, so the dev client/server can test the integration while the
@@ -127,11 +131,10 @@ playeranimator-658587:4587214
 ```
 
 A test data pack lives in `datapacks/iss-test/` (deity `iss:iron`, +30% fire
-spell power at favor 3+, vanilla-only offerings). It is installed in the dev
-worlds as `datapacks/iss`. The fire spell power attribute is registered as
-`irons_spellbooks:fire_spell_power` in the pinned Iron's Spellbooks version;
-older versions used `irons_spellbooks:fire_magic_power`, which can be used in the
-same action.
+spell power at favor 3+, vanilla-only offerings, and data-driven spell perks for
+Firebolt/Icicle/Heal). It is installed in the dev worlds as `datapacks/iss`. The
+fire spell power attribute is registered as
+`irons_spellbooks:fire_spell_power` in the pinned Iron's Spellbooks version.
 
 ## Chinese translation status
 
