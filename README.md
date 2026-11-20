@@ -11,7 +11,7 @@ This fork (`ReBelieve-1.20.1` branch) finishes the abandoned Forge 1.20.1 port o
 RPG Gods and keeps the data pack format playable on Minecraft 1.20.1 / Forge 47.x.
 
 * **Wiki / data pack documentation**: https://github.com/Rinko1231/RPG-Gods-ReBelieve/wiki
-* **Greek mythology data pack (1.20.1)**: [`datapacks/greek`](datapacks/greek)
+* **Greek mythology data pack (1.20.1)**: [`datapacks/greek`](datapacks/greek) — download: https://github.com/Rinko1231/RPG-Gods-ReBelieve/releases/tag/greek-1.20.1
 * **Bundled example pack**: [`examples/rpg-gods-example`](examples/rpg-gods-example)
 * **Documentation source (EN / 中文)**: [`docs/en`](docs/en) and [`docs/zh`](docs/zh)
 * **Porting notes**: [`PORTING.md`](PORTING.md)
