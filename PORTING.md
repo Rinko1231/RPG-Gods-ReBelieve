@@ -99,6 +99,40 @@ Verified on a copy of the save: the server reports
 `/favor list` lists all 13 deities, and `summon rpggods:altar` with
 `Deity:"greek:athena"` works.
 
+## Optional Iron's Spellbooks integration
+
+The mod is still playable without Iron's Spellbooks. Two optional features are
+guarded so that the mod never references Iron's Spellbooks classes unless the mod
+is loaded:
+
+* `rpggods:attribute` perk action — a generic, registry-based way to grant any
+  Forge attribute while the player's favor level is inside the perk's range. The
+  attribute is stored as a `ResourceLocation` and resolved at runtime, so a data
+  pack that mentions `irons_spellbooks:fire_spell_power` still loads (and simply
+  does nothing) when Iron's Spellbooks is not installed.
+* `rpggods.compat.IronSpellsCompat` — listens to `SpellOnCastEvent`,
+  `SpellDamageEvent` and `SpellHealEvent` and grants favor with `iss:iron`.
+  The class is only loaded when `ModList` reports `irons_spellbooks` as loaded.
+
+`build.gradle` declares the CurseForge artifacts as `compileOnly` +
+`runtimeOnly`, so the dev client/server can test the integration while the
+published jar does not require Iron's Spellbooks:
+
+```
+irons-spells-n-spellbooks-855414:9702213
+curios-309927:6418456
+geckolib-388172:8285794
+irons-lib-1492763:9687937
+playeranimator-658587:4587214
+```
+
+A test data pack lives in `datapacks/iss-test/` (deity `iss:iron`, +30% fire
+spell power at favor 3+, vanilla-only offerings). It is installed in the dev
+worlds as `datapacks/iss`. The fire spell power attribute is registered as
+`irons_spellbooks:fire_spell_power` in the pinned Iron's Spellbooks version;
+older versions used `irons_spellbooks:fire_magic_power`, which can be used in the
+same action.
+
 ## Chinese translation status
 
 There is no RPG Gods project in the CFPA

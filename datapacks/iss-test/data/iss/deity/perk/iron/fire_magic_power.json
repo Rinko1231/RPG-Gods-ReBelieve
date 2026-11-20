@@ -1,0 +1,30 @@
+{
+  "icon": {
+    "item": "minecraft:blaze_powder",
+    "fancy": false,
+    "color": 16755200
+  },
+  "range": {
+    "deity": "iss:iron",
+    "minlevel": 3,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:attribute",
+      "attribute": "irons_spellbooks:fire_spell_power",
+      "amount": 0.3,
+      "operation": "add_multiplied_base"
+    },
+    {
+      "type": "rpggods:attribute",
+      "attribute": "irons_spellbooks:fire_magic_power",
+      "amount": 0.3,
+      "operation": "add_multiplied_base"
+    }
+  ],
+  "positive": true
+}

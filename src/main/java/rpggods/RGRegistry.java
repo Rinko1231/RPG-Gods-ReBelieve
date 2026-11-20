@@ -51,6 +51,7 @@ import rpggods.data.perk.Perk;
 import rpggods.data.perk.action.AffinityAction;
 import rpggods.data.perk.action.ArrowCountAction;
 import rpggods.data.perk.action.ArrowEffectAction;
+import rpggods.data.perk.action.AttributeAction;
 import rpggods.data.perk.action.AutosmeltAction;
 import rpggods.data.perk.action.CropAgeAction;
 import rpggods.data.perk.action.CropYieldAction;
@@ -421,6 +422,8 @@ public final class RGRegistry {
         public static final RegistryObject<Codec<UnlockAction>> UNLOCK = PERK_ACTION_TYPES.register("unlock", () -> UnlockAction.CODEC);
         public static final RegistryObject<Codec<UnsmeltAction>> UNSMELT = PERK_ACTION_TYPES.register("unsmelt", () -> UnsmeltAction.CODEC);
         public static final RegistryObject<Codec<XpValueAction>> XP = PERK_ACTION_TYPES.register("xp", () -> XpValueAction.CODEC);
+        // registered last so the numeric ids of the existing action types do not shift
+        public static final RegistryObject<Codec<AttributeAction>> ATTRIBUTE = PERK_ACTION_TYPES.register("attribute", () -> AttributeAction.CODEC);
 
     }
 

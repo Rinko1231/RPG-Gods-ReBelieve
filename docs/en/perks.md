@@ -142,6 +142,7 @@ Every action object may contain `"hidden": true` to hide it in the perk tooltip.
 | `rpggods:favor` | `deity`: ID, `amount`: int provider, `type`?: `points`/`levels` | Change favor. |
 | `rpggods:favor_decay` | `deity`: ID, `amount`: float | Add to the favor decay rate. |
 | `rpggods:affinity` | `entity`: entity holder set, `affinity`: `passive`/`hostile`/`flee`/`tame` | Assign AI behavior toward the player. |
+| `rpggods:attribute` | `attribute`: attribute ID, `amount`: double, `operation`?: `add_value`/`add_multiplied_base`/`add_multiplied_total` | Passive attribute modifier while the perk's favor range is met. |
 | `rpggods:arrow_damage` | `multiplier`: float | Multiply arrow damage. |
 | `rpggods:arrow_effect` | `effect`: effect object | Add an effect to the arrow. |
 | `rpggods:arrow_count` | `amount`: int provider | Spawn extra arrows. |
@@ -156,6 +157,31 @@ Every action object may contain `"hidden": true` to hide it in the perk tooltip.
 | `rpggods:patron` | `patron`: `{deity?, penalty?, decay?, perk_chance?}` | Set or clear the player's patron. |
 | `rpggods:unlock` | `deity`: ID | Unlock a deity. |
 | `rpggods:xp` | `multiplier`: float | Multiply experience orb value. |
+
+### Attribute action
+
+```json
+"action": [
+  {
+    "type": "rpggods:attribute",
+    "attribute": "irons_spellbooks:fire_spell_power",
+    "amount": 0.3,
+    "operation": "add_multiplied_base"
+  }
+]
+```
+
+Unlike the other actions this is not a one-shot effect. The modifier is applied
+while the player's favor level is inside the perk's `range` and removed when the
+level leaves the range (or the deity becomes locked/disabled). It is
+re-evaluated on favor level changes, player login, respawn, dimension change and
+`/reload`.
+
+`attribute` is a plain resource location. If the mod that owns the attribute is
+not installed the data pack still loads and the action simply does nothing.
+`operation` defaults to `add_value`; the integer ids `0`/`1`/`2` are accepted as
+well. Values are raw attribute values: for percentage-style attributes such as
+Iron's Spellbooks spell power (base `1.0`), `0.3` means +30%.
 
 ### Effect object
 

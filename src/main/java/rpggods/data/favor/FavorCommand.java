@@ -216,6 +216,7 @@ public class FavorCommand {
     private static int setEnabled(CommandSourceStack source, Collection<? extends ServerPlayer> players, boolean enabled) {
         for (final ServerPlayer player : players) {
             RPGGods.getFavor(player).orElse(Favor.EMPTY).setEnabled(enabled);
+            rpggods.util.AttributeModifiers.reconcile(player);
         }
         // send command feedback
         final String sub = (enabled ? "enabled" : "disabled");
@@ -243,6 +244,7 @@ public class FavorCommand {
                 throw FAVOR_DISABLED_EXCEPTION.create(player.getDisplayName());
             }
             favor.getFavor(deity).setEnabled(enabled);
+            rpggods.util.AttributeModifiers.reconcile(player);
         }
 
         // send command feedback

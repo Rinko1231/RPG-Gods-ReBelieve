@@ -169,6 +169,8 @@
   "favor.perk.type.favor_decay.description": "%2$s 的恩宠衰减 %1$s",
   "favor.perk.type.affinity": "亲和",
   "favor.perk.type.affinity.description": "%1$s",
+  "favor.perk.type.attribute": "属性",
+  "favor.perk.type.attribute.description": "%1$s %2$s",
   "favor.perk.type.arrow_count": "多重射击",
   "favor.perk.type.arrow_count.description": "%1$s 支箭",
   "favor.perk.type.arrow_damage": "箭矢伤害",

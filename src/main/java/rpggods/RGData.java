@@ -67,6 +67,8 @@ public final class RGData {
             final net.minecraft.core.RegistryAccess registryAccess = event.getPlayerList().getServer().registryAccess();
             rpggods.data.deity.DeityContainer.populate(registryAccess);
             logRegistrySummary(registryAccess);
+            // data packs may have changed attribute perks
+            rpggods.util.AttributeModifiers.reconcileAll(event.getPlayerList().getServer());
         }
     }
 

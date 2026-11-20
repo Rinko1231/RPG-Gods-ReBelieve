@@ -44,6 +44,7 @@ import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -58,6 +59,7 @@ import rpggods.data.tameable.ITameable;
 import rpggods.data.tameable.Tameable;
 import rpggods.entity.AffinityGoal;
 import rpggods.network.SUpdateSittingPacket;
+import rpggods.util.AttributeModifiers;
 import rpggods.util.FavorChangedEvent;
 
 import java.util.Optional;
@@ -224,6 +226,40 @@ public class RGEvents {
                     PerkDispatcher.invoke(player, f)
                             .runForAction(RGRegistry.PerkActionReg.UNLOCK.get());
                 });
+                // attribute perks are passive and depend on the favor level, so re-apply them
+                if (RPGGods.CONFIG.useGlobalFavor() || RPGGods.CONFIG.useTeamFavor()) {
+                    AttributeModifiers.reconcileAll(player.server);
+                } else {
+                    AttributeModifiers.reconcile(player);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerLoggedIn(final PlayerEvent.PlayerLoggedInEvent event) {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                AttributeModifiers.reconcile(player);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerRespawn(final PlayerEvent.PlayerRespawnEvent event) {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                AttributeModifiers.reconcile(player);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerChangedDimension(final PlayerEvent.PlayerChangedDimensionEvent event) {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                AttributeModifiers.reconcile(player);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerLoggedOut(final PlayerEvent.PlayerLoggedOutEvent event) {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                AttributeModifiers.clear(player);
             }
         }
 

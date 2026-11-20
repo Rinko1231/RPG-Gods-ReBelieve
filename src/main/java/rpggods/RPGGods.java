@@ -71,6 +71,10 @@ public class RPGGods {
         MinecraftForge.EVENT_BUS.register(RGData.class);
         // Events that affect Favor and Perks
         MinecraftForge.EVENT_BUS.register(RGEvents.ForgeHandler.class);
+        // Optional Iron's Spellbooks integration (only load the class when the mod is present)
+        if (net.minecraftforge.fml.ModList.get().isLoaded("irons_spellbooks")) {
+            rpggods.compat.IronSpellsCompat.register();
+        }
         // Events that are client-only
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             MinecraftForge.EVENT_BUS.register(RGEvents.ClientHandler.class);

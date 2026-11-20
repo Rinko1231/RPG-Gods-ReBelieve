@@ -138,6 +138,7 @@ Holder set 接受单个 ID（`"minecraft:zombie"`）、列表
 | `rpggods:favor` | `deity`：ID，`amount`：整数提供器，`type`?：`points`/`levels` | 改变恩宠。 |
 | `rpggods:favor_decay` | `deity`：ID，`amount`：浮点 | 增加恩宠衰减率。 |
 | `rpggods:affinity` | `entity`：实体 holder set，`affinity`：`passive`/`hostile`/`flee`/`tame` | 设置对玩家的 AI 行为。 |
+| `rpggods:attribute` | `attribute`：属性 ID，`amount`：浮点，`operation`?：`add_value`/`add_multiplied_base`/`add_multiplied_total` | 在恩宠范围内持续提供属性修饰符。 |
 | `rpggods:arrow_damage` | `multiplier`：浮点 | 箭矢伤害倍率。 |
 | `rpggods:arrow_effect` | `effect`：效果对象 | 给箭矢添加效果。 |
 | `rpggods:arrow_count` | `amount`：整数提供器 | 额外生成箭矢。 |
@@ -152,6 +153,28 @@ Holder set 接受单个 ID（`"minecraft:zombie"`）、列表
 | `rpggods:patron` | `patron`：`{deity?, penalty?, decay?, perk_chance?}` | 设置或清除守护神。 |
 | `rpggods:unlock` | `deity`：ID | 解锁神祇。 |
 | `rpggods:xp` | `multiplier`：浮点 | 经验球价值倍率。 |
+
+### 属性动作
+
+```json
+"action": [
+  {
+    "type": "rpggods:attribute",
+    "attribute": "irons_spellbooks:fire_spell_power",
+    "amount": 0.3,
+    "operation": "add_multiplied_base"
+  }
+]
+```
+
+与其他动作不同，它不是一次性效果：只要玩家的恩宠等级位于恩赐的 `range` 内，
+修饰符就会一直存在；等级离开范围（或神祇被锁定/禁用）时移除。恩宠等级变化、
+玩家登录、重生、切换维度以及 `/reload` 时都会重新结算。
+
+`attribute` 就是普通的资源位置。即使拥有该属性的模组没有安装，数据包仍会正常
+加载，这个动作只是不产生效果。`operation` 默认为 `add_value`，也接受整数
+`0`/`1`/`2`。数值是属性的原始值：对于铁魔法法强这类百分比属性（基础值
+`1.0`），`0.3` 表示 +30%。
 
 ### 效果对象
 

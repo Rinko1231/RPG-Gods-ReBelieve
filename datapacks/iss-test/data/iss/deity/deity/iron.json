@@ -1,0 +1,9 @@
+{
+  "name": "iss:iron",
+  "icon": "minecraft:blaze_powder",
+  "gender": "male",
+  "unlocked": true,
+  "enabled": true,
+  "minlevel": -10,
+  "maxlevel": 10
+}

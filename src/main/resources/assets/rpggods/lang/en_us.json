@@ -169,6 +169,8 @@
   "favor.perk.type.favor_decay.description": "%1$s favor decay with %2$s",
   "favor.perk.type.affinity": "Affinity",
   "favor.perk.type.affinity.description": "%1$s",
+  "favor.perk.type.attribute": "Attribute",
+  "favor.perk.type.attribute.description": "%1$s %2$s",
   "favor.perk.type.arrow_count": "Multishot",
   "favor.perk.type.arrow_count.description": "%1$s arrow(s)",
   "favor.perk.type.arrow_damage": "Arrow Damage",

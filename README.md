@@ -23,7 +23,17 @@ Requires JDK 17 and the Gradle wrapper:
 ./gradlew build
 ```
 
-The mod jar is written to `build/libs/`.
+The mod jar is written to `build/libs/`. The dev environment targets Forge
+`1.20.1-47.4.0` (the mod itself declares `[47,)`).
+
+## Optional integrations
+* **Iron's Spellbooks** — `rpggods:attribute` perk actions can grant any Forge
+  attribute, and spell casting / spell damage / spell healing grant favor with
+  the test deity `iss:iron`. The integration classes are only loaded when
+  Iron's Spellbooks is installed, and data packs that mention missing attributes
+  still load (`build.gradle` adds the optional mods as `compileOnly` +
+  `runtimeOnly`; pass `-PnoIrons` to run the dev client/server without them).
+* Test data pack: [`datapacks/iss-test`](datapacks/iss-test).
 
 ## Notes
 * Data pack registry keys still use the `deity:` namespace, while perk

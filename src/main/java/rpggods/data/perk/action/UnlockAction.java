@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import rpggods.RGRegistry;
 import rpggods.data.deity.Deity;
 import rpggods.data.deity.DeityContainer;
@@ -44,12 +43,14 @@ public class UnlockAction extends PerkAction {
             return false;
         }
         // load favor for deity
-        final Player player = context.getPlayer();
+        final net.minecraft.server.level.ServerPlayer player = context.getPlayer();
         final IFavor favor = context.getFavor();
         final FavorLevel level = favor.getFavor(this.deity);
         // verify not currently unlocked
         if(!level.isEnabled()) {
             level.setEnabled(true);
+            // attribute perks may now apply for this deity
+            rpggods.util.AttributeModifiers.reconcile(player);
             // send player feedback
             Component message = getDescription(context.getRegistryAccess());
             player.displayClientMessage(message.copy().withStyle(ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE), true);
