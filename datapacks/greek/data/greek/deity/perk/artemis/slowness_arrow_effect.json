@@ -1,0 +1,33 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:tipped_arrow",
+      "Count": 1,
+      "tag": {
+        "Potion": "minecraft:slowness"
+      }
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:artemis",
+    "minlevel": 5,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:arrow_effect",
+      "effect": {
+        "id": "minecraft:slowness",
+        "duration": 450,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown": 390,
+  "chance": 0.75
+}

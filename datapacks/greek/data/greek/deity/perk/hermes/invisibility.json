@@ -1,0 +1,30 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:spider_eye",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hermes",
+    "minlevel": 5,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:invisibility",
+        "duration": 1100,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown": 4800,
+  "chance": 0.015
+}

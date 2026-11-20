@@ -62,12 +62,19 @@ public class AffinityAction extends PerkAction {
 
     @Override
     public Component createDescription(RegistryAccess registryAccess) {
-        Component entityComponent = entityType.getDescription();
-        return Component.translatable(PREFIX + "affinity" + SUFFIX + "." + affinity.getSerializedName(), entityComponent);
+        return this.affinity.getDisplayDescription(this.entityType.getDescription());
     }
 
     @Override
     public Codec<? extends PerkAction> getCodec() {
         return RGRegistry.PerkActionReg.AFFINITY.get();
+    }
+
+    public EntityType<?> getEntityType() {
+        return entityType;
+    }
+
+    public AffinityType getAffinity() {
+        return affinity;
     }
 }

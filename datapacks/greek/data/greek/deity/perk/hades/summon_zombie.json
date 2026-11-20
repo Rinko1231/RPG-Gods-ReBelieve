@@ -1,0 +1,32 @@
+{
+  "icon": {
+    "item": "minecraft:zombie_head",
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:hades",
+    "minlevel": -4,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "night": true
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:zombie",
+      "distance": 0
+    }
+  ],
+  "cooldown": 9000,
+  "chance": 0.08
+}

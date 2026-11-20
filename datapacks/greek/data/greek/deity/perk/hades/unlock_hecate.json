@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:soul_torch",
+      "Count": 1
+    },
+    "fancy": true,
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:hades",
+    "minlevel": 7,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:unlock",
+      "deity": "greek:hecate"
+    }
+  ],
+  "cooldown_category": "unlock_hecate",
+  "cooldown": 12000
+}

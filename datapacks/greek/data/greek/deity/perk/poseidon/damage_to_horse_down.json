@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:wooden_sword",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": -10,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:player_hurt_entity",
+    "entity": "minecraft:horse"
+  },
+  "action": [
+    {
+      "type": "rpggods:damage",
+      "multiplier": 0.5
+    }
+  ],
+  "cooldown_category": "poseidon:damage_to_horse_down",
+  "cooldown": 550,
+  "chance": 0.045
+}

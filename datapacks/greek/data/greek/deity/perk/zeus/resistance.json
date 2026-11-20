@@ -1,0 +1,31 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:iron_chestplate",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:zeus",
+    "minlevel": 4,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:resistance",
+        "duration": 950,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "zeus:potion",
+  "cooldown": 14800,
+  "chance": 0.02
+}

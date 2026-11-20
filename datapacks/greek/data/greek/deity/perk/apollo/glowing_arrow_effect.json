@@ -1,0 +1,30 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:spectral_arrow",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:apollo",
+    "minlevel": 5,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:arrow_effect",
+      "effect": {
+        "id": "minecraft:glowing",
+        "duration": 225,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown": 160,
+  "chance": 0.5
+}

@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": "minecraft:cracked_stone_bricks",
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": -4,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:silverfish"
+    },
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:silverfish"
+    }
+  ],
+  "cooldown": 12000,
+  "chance": 0.06
+}

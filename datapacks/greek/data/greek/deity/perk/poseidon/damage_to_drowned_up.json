@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:iron_sword",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": 4,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:player_hurt_entity",
+    "entity": "minecraft:drowned"
+  },
+  "action": [
+    {
+      "type": "rpggods:damage",
+      "multiplier": 1.1
+    }
+  ],
+  "cooldown_category": "poseidon:damage_up",
+  "cooldown": 400,
+  "chance": 0.1
+}

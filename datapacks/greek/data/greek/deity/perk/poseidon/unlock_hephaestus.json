@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:anvil",
+      "Count": 1
+    },
+    "fancy": true,
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": 7,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:unlock",
+      "deity": "greek:hephaestus"
+    }
+  ],
+  "cooldown_category": "unlock_hephaestus",
+  "cooldown": 12000
+}

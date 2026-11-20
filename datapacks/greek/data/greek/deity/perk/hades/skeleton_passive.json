@@ -1,0 +1,21 @@
+{
+  "icon": {
+    "item": "minecraft:bone",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hades",
+    "minlevel": 6,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:skeleton",
+      "affinity": "passive"
+    }
+  ]
+}

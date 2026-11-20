@@ -91,7 +91,7 @@ public class OffspringCountAction extends PerkAction {
     @Override
     public Component createDescription(RegistryAccess registryAccess) {
         final Component boundsComponent = RGComponentUtils.createBoundsComponent(amount.getMinValue(), amount.getMaxValue());
-        return Component.translatable(PREFIX + "offspring_count" + SUFFIX, boundsComponent);
+        return Component.translatable(PREFIX + "offspring" + SUFFIX, boundsComponent);
     }
 
     @Override

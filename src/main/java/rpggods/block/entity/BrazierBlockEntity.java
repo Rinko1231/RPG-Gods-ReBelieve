@@ -103,7 +103,7 @@ public class BrazierBlockEntity extends BlockEntity implements ContainerSingleIt
         }
         // do not burn offering when owner is missing or offline
         final Player player = getOwnerPlayer(level);
-        if(null == player) {
+        if(!(player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)) {
             return;
         }
         // locate the nearest altar
@@ -117,8 +117,8 @@ public class BrazierBlockEntity extends BlockEntity implements ContainerSingleIt
         // burn the offering
         final ItemStack offering = removeItem(0, 1);
         final ResourceLocation deity = altar.getDeity().get();
-        RPGGods.getFavor(player).ifPresent(favor -> {
-            Optional<ItemStack> result = PerkDispatcher.onOffering(Optional.of(altar), deity, player, favor, offering, true);
+        RPGGods.getFavor(serverPlayer).ifPresent(favor -> {
+            Optional<ItemStack> result = PerkDispatcher.onOffering(Optional.of(altar), deity, serverPlayer, favor, offering, true);
             if(!result.isPresent()) {
                 // the offering failed, drop the item stack instead
                 Containers.dropItemStack(level, vec.x, vec.y + 0.5D, vec.z, offering);

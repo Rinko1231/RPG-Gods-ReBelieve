@@ -1,0 +1,24 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:glass_bottle",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hecate",
+    "minlevel": 7,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:witch",
+      "affinity": "passive"
+    }
+  ]
+}

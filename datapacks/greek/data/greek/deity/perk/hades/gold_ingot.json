@@ -1,0 +1,34 @@
+{
+  "icon": {
+    "item": "minecraft:gold_ingot",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hades",
+    "minlevel": 3,
+    "maxlevel": 9
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "dimension": "minecraft:the_nether"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:item",
+      "item": {
+        "id": "minecraft:gold_ingot",
+        "Count": 8
+      }
+    }
+  ],
+  "cooldown": 4400,
+  "chance": 0.018
+}

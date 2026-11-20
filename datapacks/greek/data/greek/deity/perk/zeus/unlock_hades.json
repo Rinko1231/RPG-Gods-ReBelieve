@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:skeleton_skull",
+      "Count": 1
+    },
+    "fancy": true,
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:zeus",
+    "minlevel": 6,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:unlock",
+      "deity": "greek:hades"
+    }
+  ],
+  "cooldown_category": "unlock_hades",
+  "cooldown": 12000
+}

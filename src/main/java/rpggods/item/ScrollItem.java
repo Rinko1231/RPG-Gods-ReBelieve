@@ -32,7 +32,7 @@ public class ScrollItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         // prevent use when there are no registered deities
-        if(RPGGods.DEITY_HELPER.isEmpty()) {
+        if(level.registryAccess().registryOrThrow(rpggods.RGRegistry.Keys.DEITIES).keySet().isEmpty()) {
             return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
         // begin using item (to enable texture change) and open GUI

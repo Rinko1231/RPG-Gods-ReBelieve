@@ -310,16 +310,16 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
             // check if altar has a deity
             if(getDeity().isPresent()) {
                 // check if there are any perk conditions for "ritual"
-                DeityContainer helper = RPGGods.DEITY_HELPER.computeIfAbsent(getDeity().get(), DeityContainer::new);
-                if(!helper.perkByConditionMap.getOrDefault(PerkCondition.Type.RITUAL, ImmutableList.of()).isEmpty()) {
+                DeityContainer helper = DeityContainer.getOrCreate(level().registryAccess(), getDeity().get());
+                if(!helper.getPerksByCondition(RGRegistry.PerkConditionReg.RITUAL.get()).isEmpty()) {
                     // onPerformRitual
                     PerkDispatcher.performRitual(this, getDeity().get());
                 }
             }
             // attempt to place light block
             if(tickCount % 4 == 1) {
-                Altar altar = RPGGods.ALTAR_MAP.getOrDefault(getAltar(), Altar.EMPTY);
-                int lightLevel = altar.getLightLevel();
+                Altar altar = Altar.getRegistry(level().registryAccess()).get(getAltar());
+                int lightLevel = altar != null ? altar.getLightLevel() : 0;
                 // check light level
                 if(lightLevel > 0) {
                     BlockPos posIn = getOnPos().above();
@@ -362,6 +362,9 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         // drop altar
         final ItemStack altarItem = new ItemStack(RGRegistry.ItemReg.ALTAR.get());
         altarItem.getOrCreateTag().putString(AltarItem.KEY_ALTAR, getAltar().toString());
+        if (getDeity().isPresent()) {
+            altarItem.getOrCreateTag().putString(AltarItem.KEY_DEITY, getDeity().get().toString());
+        }
         Block.popResource(this.level(), blockPosition().above(), altarItem);
         // drop other
         this.brokenByAnything(p_213815_1_);
@@ -403,11 +406,11 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
 
     @Override
     public InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
-        if (player instanceof ServerPlayer && hand == InteractionHand.MAIN_HAND && this.isAlive()) {
+        if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND && this.isAlive()) {
             // check if altar is deity
             if (getDeity().isPresent()) {
                 // attempt to process favor capability
-                LazyOptional<IFavor> favor = RPGGods.getFavor(player);
+                LazyOptional<IFavor> favor = RPGGods.getFavor(serverPlayer);
                 if (favor.isPresent()) {
                     ResourceLocation deity = getDeity().get();
                     IFavor ifavor = favor.orElse(Favor.EMPTY);
@@ -415,22 +418,22 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
                     if(!enabled) {
                         // send feedback about disabled deity
                         Component message = Component.translatable("favor.locked");
-                        player.displayClientMessage(message, true);
+                        serverPlayer.displayClientMessage(message, true);
                         return InteractionResult.PASS;
                     }
                     // detect item in mainhand
-                    ItemStack heldItem = player.getItemInHand(hand);
+                    ItemStack heldItem = serverPlayer.getItemInHand(hand);
                     if(!heldItem.isEmpty()) {
                         // attempt to process held item as offering
-                        Optional<ItemStack> offeringResult = PerkDispatcher.onOffering(Optional.of(this), deity, player, ifavor, heldItem, false);
+                        Optional<ItemStack> offeringResult = PerkDispatcher.onOffering(Optional.of(this), deity, serverPlayer, ifavor, heldItem, false);
                         // if offering succeeded, update player inventory
                         if (offeringResult.isPresent()) {
-                            player.setItemInHand(hand, offeringResult.get());
+                            serverPlayer.setItemInHand(hand, offeringResult.get());
                             return InteractionResult.CONSUME;
                         }
                     }
                     // no offering result, open favor GUI
-                    NetworkHooks.openScreen((ServerPlayer) player,
+                    NetworkHooks.openScreen(serverPlayer,
                             new SimpleMenuProvider((id, inventory, p) ->
                                     new FavorContainerMenu(id, inventory, ifavor, deity),
                                     Component.empty()),
@@ -444,7 +447,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
                 }
             } else if (!(isArmorLocked() && isHandsLocked() && isBlockLocked() && isAltarPoseLocked())) {
                 // open altar GUI
-                NetworkHooks.openScreen((ServerPlayer) player,
+                NetworkHooks.openScreen(serverPlayer,
                         new SimpleMenuProvider((id, inv, p) ->
                                 new AltarContainerMenu(id, inv, this.inventory, this),
                                 Component.empty()),
@@ -573,10 +576,14 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
      */
     public void applyAltarProperties(final ResourceLocation altarId) {
         // query altar by id
-        Altar altar = RPGGods.ALTAR_MAP.getOrDefault(altarId, Altar.EMPTY);
+        Altar altar = Altar.getRegistry(level().registryAccess()).get(altarId);
+        if (altar == null) {
+            altar = Altar.EMPTY;
+        }
         // apply properties
         setDeity(altar.getDeity());
-        setFemale(altar.isFemale());
+        final Deity deity = altar.getDeity().isPresent() ? Deity.getRegistry(level().registryAccess()).get(altar.getDeity().get()) : null;
+        setFemale(altar.isFemale() || (deity != null && deity.getGender() == Deity.Gender.FEMALE));
         setSlim(altar.isSlim());
         setArmorLocked(altar.getItems().isArmorLocked());
         setHandsLocked(altar.getItems().isHandsLocked());
@@ -589,7 +596,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         setBlockSlot(new ItemStack(altar.getItems().getBlock().asItem()));
         // custom name
         if (altar.getDeity().isPresent()) {
-            setCustomName(DeityContainer.createName(altarId));
+            setCustomName(Component.translatable(Altar.createTranslationKey(altar.getDeity().get())));
         } else if (altar.getName().isPresent()) {
             setCustomName(Component.literal(altar.getName().get()));
         }
@@ -603,7 +610,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
      * @param altar the Altar as retrieved from the altar map
      * @return a CompoundTag that represents the Altar applied to an AltarEntity
      */
-    public static CompoundTag writeAltarProperties(final ResourceLocation altarId, final Altar altar) {
+    public static CompoundTag writeAltarProperties(final ResourceLocation altarId, final Altar altar, final net.minecraft.core.RegistryAccess registryAccess) {
         // create compound tag
         CompoundTag compoundTag = new CompoundTag();
         if(null == altar) {
@@ -615,12 +622,13 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         // determine custom name
         Component customName = Component.literal(altar.getName().orElse(""));
         // write deity
-        Optional<Deity> deity = Optional.empty();
-        if (altar.getDeity().isPresent() && !altar.getDeity().get().toString().isEmpty()) {
+        boolean female = altar.isFemale();
+        if (altar.getDeity().isPresent()) {
             // determine string to save deity name
             ResourceLocation deityId = altar.getDeity().get();
-            deity = Optional.ofNullable(RPGGods.DEITY_MAP.get(deityId));
-            customName = DeityContainer.createName(altarId);
+            final Deity deity = Deity.getRegistry(registryAccess).get(deityId);
+            female = female || (deity != null && deity.getGender() == Deity.Gender.FEMALE);
+            customName = Component.translatable(Altar.createTranslationKey(deityId));
             compoundTag.putString(KEY_DEITY, deityId.toString());
         }
         // write custom name
@@ -651,7 +659,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         compoundTag.put(KEY_INVENTORY, listNBT);
         // determine flags
         byte flags = 0;
-        if(altar.isFemale()) flags = (byte) (flags | 0x01);
+        if(female) flags = (byte) (flags | 0x01);
         if(altar.isSlim()) flags = (byte) (flags | 0x02);
         // write flags
         compoundTag.putByte(KEY_FLAGS, flags);

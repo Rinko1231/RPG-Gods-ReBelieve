@@ -1,0 +1,30 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:spectral_arrow",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hermes",
+    "minlevel": -5,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:glowing",
+        "duration": 900,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown": 4200,
+  "chance": 0.02
+}

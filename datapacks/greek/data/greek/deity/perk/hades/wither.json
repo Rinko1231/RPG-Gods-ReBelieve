@@ -1,0 +1,37 @@
+{
+  "icon": {
+    "item": "minecraft:wither_rose",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hades",
+    "minlevel": -9,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "dimension": "minecraft:the_nether"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:wither",
+        "duration": 180,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "hades:potion",
+  "cooldown": 4500,
+  "chance": 0.009
+}

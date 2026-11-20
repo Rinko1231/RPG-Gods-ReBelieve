@@ -1,0 +1,21 @@
+{
+  "icon": {
+    "item": "minecraft:mushroom_stew",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:apollo",
+    "minlevel": -7,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:mooshroom",
+      "affinity": "hostile"
+    }
+  ]
+}

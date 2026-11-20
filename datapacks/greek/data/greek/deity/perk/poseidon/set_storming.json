@@ -1,0 +1,32 @@
+{
+  "icon": {
+    "item": "minecraft:water_bucket",
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": -7,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "biome": "#minecraft:is_ocean"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:function",
+      "function": "greek:set_storming",
+      "translation_key": "perk.function.set_storming"
+    }
+  ],
+  "cooldown": 21000,
+  "chance": 0.04
+}

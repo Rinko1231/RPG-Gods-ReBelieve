@@ -1,0 +1,40 @@
+{
+  "icon": {
+    "item": "minecraft:name_tag",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hades",
+    "minlevel": 9,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:player_interact_entity",
+        "entity": "minecraft:skeleton"
+      },
+      {
+        "type": "rpggods:item",
+        "item": {
+          "items": "minecraft:bone"
+        }
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:skeleton",
+      "affinity": "tame"
+    },
+    {
+      "type": "rpggods:favor",
+      "deity": "greek:hades",
+      "amount": -100
+    }
+  ],
+  "cooldown_category": "tame",
+  "cooldown": 12000
+}

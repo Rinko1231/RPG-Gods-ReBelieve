@@ -63,7 +63,7 @@ public class UnlockAction extends PerkAction {
     public Component createDescription(RegistryAccess registryAccess) {
         final DeityContainer container = DeityContainer.getOrCreate(registryAccess, this.deity);
         final String suffix = container.getDeity().getGender().getSerializedName();
-        return Component.translatable( PREFIX + "unlock" + SUFFIX + "." + suffix, container.getDeity());
+        return Component.translatable( PREFIX + "unlock" + SUFFIX + "." + suffix, container.getName());
     }
 
     @Override

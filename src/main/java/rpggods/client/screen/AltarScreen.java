@@ -113,7 +113,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
         } else {
             name = Optional.empty();
         }
-        female = altar.isFemale();
+        female = screenContainer.getEntity().isFemale();
         slim = altar.isSlim();
         pose = altar.getPose();
         poseLocked = altar.isPoseLocked();

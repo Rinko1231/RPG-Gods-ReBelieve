@@ -1,0 +1,24 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:lead",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:ares",
+    "minlevel": 7,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:wandering_trader",
+      "affinity": "flee"
+    }
+  ]
+}

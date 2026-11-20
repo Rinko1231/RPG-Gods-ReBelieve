@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": "minecraft:golden_pickaxe",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": 5,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:haste",
+        "duration": 900,
+        "amplifier": 1,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown": 3200,
+  "chance": 0.22
+}

@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "example:athena",
+  "female": true,
+  "slim": false,
+  "items": {
+    "mainhand": "minecraft:trident",
+    "block": "minecraft:quartz_slab",
+    "hands_locked": true,
+    "block_locked": true
+  },
+  "pose": {
+    "head": {
+      "x": 0.1
+    }
+  },
+  "pose_locked": false
+}

@@ -212,7 +212,7 @@ public final class PerkDispatcher {
         for(Map.Entry<ResourceLocation, Offering> entry : container.getOfferingsByItem(item.getItem()).entrySet()) {
             Offering offering = entry.getValue();
             // validate cooldown
-            Cooldown cooldown = favor.getOfferingCooldown(entry.getKey());
+            Cooldown cooldown = favor.getOfferingCooldownMap().computeIfAbsent(entry.getKey(), k -> offering.createCooldown());
             if(!cooldown.canUse()) {
                 continue;
             }
@@ -305,7 +305,7 @@ public final class PerkDispatcher {
             // iterate matching sacrifices
             for (Map.Entry<ResourceLocation, Sacrifice> entry : container.getSacrificesByEntity(entityType).entrySet()) {
                 // validate sacrifice cooldown
-                Cooldown cooldown = favor.getSacrificeCooldown(entry.getKey());
+                Cooldown cooldown = favor.getSacrificeCooldownMap().computeIfAbsent(entry.getKey(), k -> entry.getValue().createCooldown());
                 if (!cooldown.canUse()) {
                     continue;
                 }
@@ -373,7 +373,9 @@ public final class PerkDispatcher {
         if(success) {
             // send feedback
             final Deity deity = Deity.getRegistry(player.level().registryAccess()).get(perk.getDeity());
-            sendPerkFeedback(deity, player, favor, perk.isPositive());
+            if (deity != null) {
+                sendPerkFeedback(deity, player, favor, perk.isPositive());
+            }
             // update cooldown
             long cooldown = (long) Math.floor(perk.getCooldown() * (1.0D + player.getRandom().nextDouble() * 0.25D));
             favor.setPerkCooldown(perk.getCategory(), cooldown);
@@ -462,6 +464,9 @@ public final class PerkDispatcher {
             altar.level().addFreshEntity(bolt);
             // send message
             final Deity patron = Deity.getRegistry(registryAccess).get(favor.getPatron().get());
+            if (patron == null) {
+                return success;
+            }
             final Component patronName = patron.getName();
             Component message = Component.translatable("favor.perk.type.patron.description.add", patronName)
                     .withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD);

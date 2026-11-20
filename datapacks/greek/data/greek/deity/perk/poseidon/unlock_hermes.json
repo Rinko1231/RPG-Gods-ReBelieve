@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:feather",
+      "Count": 1
+    },
+    "fancy": true,
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": 6,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:unlock",
+      "deity": "greek:hermes"
+    }
+  ],
+  "cooldown_category": "unlock_hermes",
+  "cooldown": 12000
+}

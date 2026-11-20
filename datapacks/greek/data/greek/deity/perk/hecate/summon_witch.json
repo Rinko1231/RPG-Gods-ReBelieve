@@ -1,0 +1,30 @@
+{
+  "icon": {
+    "item": "minecraft:potion",
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:hecate",
+    "minlevel": -6,
+    "maxlevel": -3
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:witch"
+    },
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:witch"
+    },
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:witch"
+    }
+  ],
+  "cooldown": 18000,
+  "chance": 0.15
+}

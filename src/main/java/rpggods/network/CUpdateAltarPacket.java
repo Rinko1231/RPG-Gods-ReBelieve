@@ -98,8 +98,10 @@ public class CUpdateAltarPacket {
                 Entity entity = context.getSender().level().getEntity(message.entityId);
                 double maxDistance = player.getEntityReach();
                 if (entity != null && entity instanceof AltarEntity altar && player.position().closerThan(entity.position(), maxDistance)) {
-                    // update pose and name
+                    // update pose, model flags and name
                     altar.setAltarPose(message.pose);
+                    altar.setFemale(message.female);
+                    altar.setSlim(message.slim);
                     if (message.customName != null && !message.customName.isEmpty()) {
                         altar.setCustomName(Component.literal(message.customName));
                     }

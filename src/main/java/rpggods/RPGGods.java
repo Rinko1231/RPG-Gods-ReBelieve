@@ -95,6 +95,20 @@ public class RPGGods {
     }
 
     /**
+     * @return the registry access of the current server or client level, or null if not available
+     */
+    @Nullable
+    public static net.minecraft.core.RegistryAccess getRegistryAccess() {
+        final net.minecraft.server.MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server != null) {
+            return server.registryAccess();
+        }
+        return DistExecutor.unsafeRunForDist(
+                () -> () -> rpggods.client.ClientRegistryAccess.getRegistryAccess(),
+                () -> () -> null);
+    }
+
+    /**
      * Determines the favor to use for the given entity
      * @param entity the entity, or null for global favor
      * @return a lazy optional containing the favor, or empty

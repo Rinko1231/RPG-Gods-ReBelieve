@@ -1,0 +1,40 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:rotten_flesh",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": -1,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "biome": "#minecraft:is_ocean"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:unluck",
+        "duration": 1100,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "poseidon:potion",
+  "cooldown": 4100,
+  "chance": 0.015
+}

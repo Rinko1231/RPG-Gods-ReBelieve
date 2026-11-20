@@ -1,0 +1,39 @@
+{
+  "icon": {
+    "item": "minecraft:prismarine_shard",
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": -6,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "biome": "#minecraft:is_ocean"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:guardian"
+    },
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:guardian"
+    },
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:guardian"
+    }
+  ],
+  "cooldown": 12000,
+  "chance": 0.05
+}

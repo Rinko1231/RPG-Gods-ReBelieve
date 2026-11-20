@@ -1,0 +1,37 @@
+{
+  "icon": {
+    "item": "minecraft:tropical_fish",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": 5,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "biome": "#forge:is_water"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:water_breathing",
+        "duration": 1400,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "poseidon:potion",
+  "cooldown": 4200,
+  "chance": 0.019
+}

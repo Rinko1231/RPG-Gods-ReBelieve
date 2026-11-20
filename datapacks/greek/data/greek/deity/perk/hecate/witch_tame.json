@@ -1,0 +1,43 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:name_tag",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hecate",
+    "minlevel": 9,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:player_interact_entity",
+        "entity": "minecraft:witch"
+      },
+      {
+        "type": "rpggods:item",
+        "item": {
+          "items": "minecraft:nether_wart"
+        }
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:witch",
+      "affinity": "tame"
+    },
+    {
+      "type": "rpggods:favor",
+      "deity": "greek:hecate",
+      "amount": -100
+    }
+  ],
+  "cooldown_category": "tame",
+  "cooldown": 12000
+}

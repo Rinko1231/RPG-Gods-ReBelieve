@@ -1,0 +1,33 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:tipped_arrow",
+      "Count": 1,
+      "tag": {
+        "Potion": "minecraft:poison"
+      }
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:artemis",
+    "minlevel": 3,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:arrow_effect",
+      "effect": {
+        "id": "minecraft:poison",
+        "duration": 225,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown": 190,
+  "chance": 0.2
+}

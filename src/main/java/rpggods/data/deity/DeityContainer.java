@@ -135,9 +135,9 @@ public class DeityContainer {
         {
             Map<Codec<? extends PerkCondition>, Map<ResourceLocation, Perk>> perkByConditionBuilder = new IdentityHashMap<>();
             for(Map.Entry<ResourceLocation, Perk> entry : this.perkMap.entrySet()) {
-                // iterate each condition in the perk and add to builder
-                for(PerkCondition condition : entry.getValue().getCondition()) {
-                    Codec<? extends PerkCondition> conditionType = condition.getCodec();
+                // index the perk under every condition codec in its condition tree,
+                // so composite conditions (and/or/not) are found by their trigger event
+                for(Codec<? extends PerkCondition> conditionType : entry.getValue().getCondition().getConditionTypes()) {
                     perkByConditionBuilder.computeIfAbsent(conditionType, c -> new HashMap<>())
                             .put(entry.getKey(), entry.getValue());
                 }
@@ -284,9 +284,25 @@ public class DeityContainer {
         // load golem registry
         final Registry<Deity> registry = registryAccess.registryOrThrow(RGRegistry.Keys.DEITIES);
         // resolve golem containers when the server starts to avoid lag spikes later
+        int totalPerks = 0;
+        int totalOfferings = 0;
+        int totalSacrifices = 0;
         for(ResourceLocation id : registry.keySet()) {
-            DeityContainer.getOrCreate(registryAccess, id);
+            try {
+                final DeityContainer container = DeityContainer.getOrCreate(registryAccess, id);
+                totalPerks += container.getPerks().size();
+                for (Map<ResourceLocation, Offering> offerings : container.getOfferings().values()) {
+                    totalOfferings += offerings.size();
+                }
+                for (Map<ResourceLocation, Sacrifice> sacrifices : container.getSacrifices().values()) {
+                    totalSacrifices += sacrifices.size();
+                }
+            } catch (Exception e) {
+                rpggods.RPGGods.LOGGER.error("[DeityContainer] Failed to load deity container for " + id, e);
+            }
         }
+        rpggods.RPGGods.LOGGER.info("[DeityContainer] Linked %s deities, %s offerings, %s sacrifices, %s perks",
+                registry.keySet().size(), totalOfferings, totalSacrifices, totalPerks);
     }
 
     /**

@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:iron_pickaxe",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": 6,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:durability",
+      "slot": "mainhand",
+      "percent": 0.15
+    }
+  ],
+  "cooldown_category": "hephaestus:durability",
+  "cooldown": 2300,
+  "chance": 0.014
+}

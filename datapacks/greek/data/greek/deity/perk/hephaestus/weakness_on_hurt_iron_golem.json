@@ -1,0 +1,29 @@
+{
+  "icon": {
+    "item": "minecraft:wooden_sword",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": -10,
+    "maxlevel": 4
+  },
+  "condition": {
+    "type": "rpggods:player_hurt_entity",
+    "entity": "minecraft:iron_golem"
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:weakness",
+        "duration": 220,
+        "amplifier": 1,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "hephaestus:potion",
+  "cooldown": 4900,
+  "chance": 0.085
+}

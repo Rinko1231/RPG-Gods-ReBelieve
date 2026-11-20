@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:arrow",
+      "Count": 1
+    },
+    "fancy": true,
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:hera",
+    "minlevel": 7,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:unlock",
+      "deity": "greek:artemis"
+    }
+  ],
+  "cooldown_category": "unlock_artemis",
+  "cooldown": 12000
+}

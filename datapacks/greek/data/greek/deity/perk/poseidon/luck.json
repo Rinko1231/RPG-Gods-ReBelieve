@@ -1,0 +1,37 @@
+{
+  "icon": {
+    "item": "minecraft:rabbit_foot",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": 3,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "biome": "#minecraft:is_ocean"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:luck",
+        "duration": 1400,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "poseidon:potion",
+  "cooldown": 4600,
+  "chance": 0.025
+}

@@ -1,0 +1,8 @@
+{
+  "name": "example:athena",
+  "icon": "minecraft:trident",
+  "unlocked": true,
+  "enabled": true,
+  "minlevel": -10,
+  "maxlevel": 10
+}

@@ -1,0 +1,29 @@
+{
+  "icon": {
+    "item": "minecraft:anvil",
+    "fancy": true,
+    "color": 16073455
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": 10,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:ritual",
+    "item": {
+      "items": "minecraft:anvil"
+    }
+  },
+  "action": [
+    {
+      "type": "rpggods:patron",
+      "patron": {
+        "deity": "greek:hephaestus",
+        "penalty": -1000,
+        "decay": -0.5,
+        "perk_chance": 0.15
+      }
+    }
+  ]
+}

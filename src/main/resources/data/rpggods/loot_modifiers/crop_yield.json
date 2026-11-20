@@ -1,5 +1,5 @@
 {
-  "type": "rpggods:crop_multiplier",
+  "type": "rpggods:crop_yield",
   "conditions": [
     {
       "condition": "minecraft:entity_properties",

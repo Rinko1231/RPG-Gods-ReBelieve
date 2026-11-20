@@ -1,0 +1,21 @@
+{
+  "icon": {
+    "item": "minecraft:iron_block",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": 9,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:autosmelt"
+    }
+  ],
+  "cooldown": 180,
+  "chance": 0.75
+}

@@ -1,25 +1,29 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
+# Gradle
+.gradle/
+build/
+out/
+build-log*.txt
+compile-errors*.txt
+server-log*.txt
+accesstransform.log
 
-# idea
-out
+# IDE
+.idea/
+*.iml
 *.ipr
 *.iws
-*.iml
-.idea
+.vscode/
+.settings/
+.classpath
+.project
+bin/
 
-# gradle
-build
-.gradle
+# Dev run directory (keep the EULA marker out of version control)
+run/
 
-# other
-eclipse
-run
+# Upstream reference clones
+reference/
 
-# Files from Forge MDK
-forge*changelog.txt
+# OS
+Thumbs.db
+.DS_Store

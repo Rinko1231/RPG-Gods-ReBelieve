@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:cobweb",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:athena",
+    "minlevel": 6,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:entity_hurt_player",
+    "entity": "minecraft:spider"
+  },
+  "action": [
+    {
+      "type": "rpggods:damage",
+      "multiplier": 0.75
+    }
+  ],
+  "cooldown_category": "athena:damage_from_spider_down",
+  "cooldown": 350,
+  "chance": 0.15
+}

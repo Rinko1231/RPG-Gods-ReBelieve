@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": "minecraft:name_tag",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": 9,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:iron_golem",
+      "affinity": "tame"
+    },
+    {
+      "type": "rpggods:favor",
+      "deity": "greek:hephaestus",
+      "amount": -100
+    }
+  ]
+}

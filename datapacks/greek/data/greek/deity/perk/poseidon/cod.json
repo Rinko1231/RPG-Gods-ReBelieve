@@ -1,0 +1,34 @@
+{
+  "icon": {
+    "item": "minecraft:cod",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:poseidon",
+    "minlevel": 2,
+    "maxlevel": 8
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "biome": "#minecraft:is_ocean"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:item",
+      "item": {
+        "id": "minecraft:cod",
+        "Count": 4
+      }
+    }
+  ],
+  "cooldown": 4400,
+  "chance": 0.015
+}

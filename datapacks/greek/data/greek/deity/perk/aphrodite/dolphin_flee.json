@@ -1,0 +1,24 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:kelp",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:aphrodite",
+    "minlevel": -5,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:dolphin",
+      "affinity": "flee"
+    }
+  ]
+}

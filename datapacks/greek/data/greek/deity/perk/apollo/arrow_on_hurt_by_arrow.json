@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": "minecraft:spectral_arrow",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:apollo",
+    "minlevel": 3,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:entity_hurt_player",
+    "entity": "minecraft:arrow"
+  },
+  "action": [
+    {
+      "type": "rpggods:item",
+      "item": {
+        "id": "minecraft:spectral_arrow",
+        "Count": 1
+      }
+    }
+  ],
+  "cooldown": 250,
+  "chance": 0.125
+}

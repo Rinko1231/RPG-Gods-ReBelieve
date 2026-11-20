@@ -1,0 +1,28 @@
+{
+  "icon": {
+    "item": "minecraft:wooden_shovel",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": -5,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:mining_fatigue",
+        "duration": 2200,
+        "amplifier": 1,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "hephaestus:potion",
+  "cooldown": 4600,
+  "chance": 0.03
+}

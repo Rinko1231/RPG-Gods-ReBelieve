@@ -1,0 +1,9 @@
+{
+  "name": "greek:aphrodite",
+  "unlocked": false,
+  "icon": {
+    "id": "minecraft:poppy",
+    "Count": 1
+  },
+  "gender": "female"
+}

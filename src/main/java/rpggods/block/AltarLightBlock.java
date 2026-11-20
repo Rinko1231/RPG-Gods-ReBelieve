@@ -73,8 +73,8 @@ public class AltarLightBlock extends LightBlock implements SimpleWaterloggedBloc
         // check if any altar entity has light level
         boolean hasAltar = false;
         for(AltarEntity altarEntity : list) {
-            Altar altar = RPGGods.ALTAR_MAP.getOrDefault(altarEntity.getAltar(), Altar.EMPTY);
-            if(altar.getLightLevel() > 0) {
+            Altar altar = Altar.getRegistry(level.registryAccess()).get(altarEntity.getAltar());
+            if(altar != null && altar.getLightLevel() > 0) {
                 hasAltar = true;
                 break;
             }

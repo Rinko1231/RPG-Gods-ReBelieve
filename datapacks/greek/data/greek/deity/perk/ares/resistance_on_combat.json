@@ -1,0 +1,31 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:chainmail_chestplate",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:ares",
+    "minlevel": 4,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:combat_start"
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:resistance",
+        "duration": 1800,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "ares:potion",
+  "cooldown": 4400,
+  "chance": 0.25
+}

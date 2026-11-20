@@ -1,0 +1,21 @@
+{
+  "icon": {
+    "item": "minecraft:leather",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hera",
+    "minlevel": -2,
+    "maxlevel": -6
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:cow",
+      "affinity": "flee"
+    }
+  ]
+}

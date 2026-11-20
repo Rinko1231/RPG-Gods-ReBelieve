@@ -37,6 +37,14 @@ public class NotCondition extends PerkCondition {
     }
 
     @Override
+    public java.util.Set<Codec<? extends PerkCondition>> getConditionTypes() {
+        final java.util.Set<Codec<? extends PerkCondition>> set = new java.util.HashSet<>();
+        set.add(getCodec());
+        set.addAll(child.getConditionTypes());
+        return set;
+    }
+
+    @Override
     public Component createDescription(final RegistryAccess registryAccess) {
         return Component.translatable(PREFIX + "not", child.createDescription(registryAccess));
     }

@@ -35,16 +35,48 @@ public final class RGData {
     }
 
     /**
+     * Rebuilds the {@link rpggods.data.deity.DeityContainer} cache when the server starts.
+     * @param event the server started event
+     */
+    @SubscribeEvent
+    public static void onServerStarted(final net.minecraftforge.event.server.ServerStartedEvent event) {
+        rpggods.data.deity.DeityContainer.clearCache();
+        final net.minecraft.core.RegistryAccess registryAccess = event.getServer().registryAccess();
+        rpggods.data.deity.DeityContainer.populate(registryAccess);
+        logRegistrySummary(registryAccess);
+    }
+
+    private static void logRegistrySummary(final net.minecraft.core.RegistryAccess registryAccess) {
+        RPGGods.LOGGER.info("Loaded %s deities, %s altars, %s offerings, %s sacrifices, %s perks from data packs",
+                registryAccess.registryOrThrow(rpggods.RGRegistry.Keys.DEITIES).size(),
+                registryAccess.registryOrThrow(rpggods.RGRegistry.Keys.ALTARS).size(),
+                registryAccess.registryOrThrow(rpggods.RGRegistry.Keys.OFFERINGS).size(),
+                registryAccess.registryOrThrow(rpggods.RGRegistry.Keys.SACRIFICES).size(),
+                registryAccess.registryOrThrow(rpggods.RGRegistry.Keys.PERKS).size());
+    }
+
+    /**
+     * Rebuilds the {@link rpggods.data.deity.DeityContainer} cache whenever
+     * datapack registries are (re)synced, for example on player join or /reload.
+     * @param event the datapack sync event
+     */
+    @SubscribeEvent
+    public static void onDatapackSync(final net.minecraftforge.event.OnDatapackSyncEvent event) {
+        if (event.getPlayerList().getServer() != null) {
+            rpggods.data.deity.DeityContainer.clearCache();
+            final net.minecraft.core.RegistryAccess registryAccess = event.getPlayerList().getServer().registryAccess();
+            rpggods.data.deity.DeityContainer.populate(registryAccess);
+            logRegistrySummary(registryAccess);
+        }
+    }
+
+    /**
      * Used to sync datapack info when resources are reloaded
      * @param event the reload listener event
      **/
     @SubscribeEvent
     public static void onReloadListeners(final AddReloadListenerEvent event) {
-        event.addListener(RPGGods.ALTAR_JSON_MANAGER);
-        event.addListener(RPGGods.DEITY_JSON_MANAGER);
-        event.addListener(RPGGods.OFFERING_JSON_MANAGER);
-        event.addListener(RPGGods.PERK_JSON_MANAGER);
-        event.addListener(RPGGods.SACRIFICE_JSON_MANAGER);
+        // Datapack registries are synced automatically, so no custom reload listeners are required
     }
 
     /**

@@ -1,0 +1,24 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:phantom_membrane",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:zeus",
+    "minlevel": 8,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:phantom",
+      "affinity": "passive"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "icon": {
+    "item": "minecraft:gunpowder",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:aphrodite",
+    "minlevel": 7,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:affinity",
+      "entity": "minecraft:creeper",
+      "affinity": "passive"
+    }
+  ],
+  "cooldown": 0
+}

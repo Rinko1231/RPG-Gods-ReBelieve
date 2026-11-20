@@ -8,11 +8,13 @@ package rpggods.util;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
@@ -56,11 +58,16 @@ public class AltarStructureProcessor extends StructureProcessor {
             // determine random instance
             final long seed = placementSettings.getBoundingBox().hashCode();
             RandomSource random = RandomSource.create(seed);
+            // resolve registry access
+            final RegistryAccess registryAccess = level instanceof Level l
+                    ? l.registryAccess()
+                    : net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer().registryAccess();
             // create list of altars with deities
             List<Tuple<ResourceLocation, Altar>> altarList = new ArrayList<>();
-            for(Map.Entry<ResourceLocation, Altar> entry : RPGGods.ALTAR_MAP.entrySet()) {
-                if(entry.getValue().getDeity().isPresent()) {
-                    altarList.add(new Tuple<>(entry.getKey(), entry.getValue()));
+            for(ResourceLocation altarId : Altar.getRegistry(registryAccess).keySet()) {
+                final Altar altar = Altar.getRegistry(registryAccess).get(altarId);
+                if(altar != null && altar.getDeity().isPresent()) {
+                    altarList.add(new Tuple<>(altarId, altar));
                 }
             }
             // attempt to choose random altar from list
@@ -70,7 +77,7 @@ public class AltarStructureProcessor extends StructureProcessor {
                 altarList.sort((tuple1, tuple2) -> tuple1.getA().compareNamespaced(tuple2.getA()));
                 selected = altarList.get(random.nextInt(altarList.size()));
                 // attempt to write deity to altar
-                CompoundTag modified = AltarEntity.writeAltarProperties(selected.getA(), selected.getB());
+                CompoundTag modified = AltarEntity.writeAltarProperties(selected.getA(), selected.getB(), registryAccess);
                 tag.merge(modified);
             }
             // create modified entity info

@@ -1,0 +1,22 @@
+{
+  "icon": {
+    "item": "minecraft:golden_apple"
+  },
+  "range": {
+    "deity": "example:athena",
+    "minlevel": 0,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:favor",
+      "deity": "example:athena",
+      "amount": 1
+    }
+  ],
+  "chance": 0.5,
+  "cooldown": 200
+}

@@ -1,0 +1,34 @@
+{
+  "icon": {
+    "item": "minecraft:rabbit_foot",
+    "color": 65535
+  },
+  "range": {
+    "deity": "greek:athena",
+    "minlevel": 4,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:player_ride_entity",
+        "entity": "minecraft:horse"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:summon",
+      "id": "minecraft:potion",
+      "nbt": "{\"Item\":{\"id\":\"minecraft:splash_potion\",\"Count\":1,\"tag\":{\"Potion\":\"minecraft:jump_boost\"}}}",
+      "distance": 0
+    }
+  ],
+  "cooldown_category": "riding_horse",
+  "cooldown": 4000,
+  "chance": 0.062
+}

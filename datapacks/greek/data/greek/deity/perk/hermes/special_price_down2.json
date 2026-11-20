@@ -1,0 +1,22 @@
+{
+  "icon": {
+    "item": "minecraft:emerald",
+    "color": 4128580
+  },
+  "range": {
+    "deity": "greek:hermes",
+    "minlevel": 5,
+    "maxlevel": 7
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:merchant_price",
+      "amount": -4
+    }
+  ],
+  "cooldown_category": "special_price_down",
+  "cooldown": 0
+}

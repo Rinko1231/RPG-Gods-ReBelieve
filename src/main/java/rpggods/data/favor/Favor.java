@@ -44,11 +44,14 @@ public class Favor implements IFavor {
     public FavorLevel getFavor(final ResourceLocation deityId) {
         return favorMap.computeIfAbsent(deityId, id -> {
             final FavorLevel level = new FavorLevel(0);
-            Optional<Deity> deity = Optional.ofNullable(RPGGods.DEITY_MAP.get(deityId));
-            deity.ifPresent(d -> {
-                level.setEnabled(d.isUnlocked() && d.isEnabled());
-                level.setLevelBounds(d.getMinLevel(), d.getMaxLevel());
-            });
+            final net.minecraft.core.RegistryAccess registryAccess = RPGGods.getRegistryAccess();
+            if (registryAccess != null) {
+                final Deity deity = Deity.getRegistry(registryAccess).get(id);
+                if (deity != null) {
+                    level.setEnabled(deity.isUnlocked() && deity.isEnabled());
+                    level.setLevelBounds(deity.getMinLevel(), deity.getMaxLevel());
+                }
+            }
             return level;
         });
     }

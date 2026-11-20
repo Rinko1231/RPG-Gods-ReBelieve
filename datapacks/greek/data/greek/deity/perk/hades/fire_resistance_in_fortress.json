@@ -1,0 +1,41 @@
+{
+  "icon": {
+    "item": "minecraft:magma_cream",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hades",
+    "minlevel": 5,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:and",
+    "value": [
+      {
+        "type": "rpggods:random_tick"
+      },
+      {
+        "type": "rpggods:location",
+        "dimension": "minecraft:the_nether"
+      },
+      {
+        "type": "rpggods:location",
+        "structure": "minecraft:fortress"
+      }
+    ]
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:fire_resistance",
+        "duration": 1400,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "hades:potion",
+  "cooldown": 2300,
+  "chance": 0.05
+}

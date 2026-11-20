@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:iron_boots",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": 7,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:durability",
+      "slot": "feet",
+      "percent": 0.1
+    }
+  ],
+  "cooldown_category": "hephaestus:durability",
+  "cooldown": 2100,
+  "chance": 0.014
+}

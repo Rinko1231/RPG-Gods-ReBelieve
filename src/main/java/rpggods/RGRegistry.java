@@ -194,6 +194,31 @@ public final class RGRegistry {
         private static void register() {
             CREATIVE_MODE_TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
+
+        public static final RegistryObject<CreativeModeTab> TAB = CREATIVE_MODE_TABS.register("main", () ->
+                CreativeModeTab.builder()
+                        .title(net.minecraft.network.chat.Component.translatable("itemGroup.rpggods"))
+                        .icon(() -> new net.minecraft.world.item.ItemStack(ItemReg.ALTAR.get()))
+                        .displayItems((params, output) -> {
+                            // add the scroll
+                            output.accept(new net.minecraft.world.item.ItemStack(ItemReg.SCROLL.get()));
+                            // add the brazier
+                            output.accept(new net.minecraft.world.item.ItemStack(ItemReg.BRAZIER.get()));
+                            // add one altar item for each registered altar
+                            params.holders().lookup(Keys.ALTARS).ifPresent(registry -> {
+                                registry.listElements()
+                                        .sorted(java.util.Comparator.comparing(holder -> holder.key().location().toString()))
+                                        .forEach(holder -> {
+                                            final net.minecraft.world.item.ItemStack stack = new net.minecraft.world.item.ItemStack(ItemReg.ALTAR.get());
+                                            stack.getOrCreateTag().putString(rpggods.item.AltarItem.KEY_ALTAR, holder.key().location().toString());
+                                            if (holder.value().getDeity().isPresent()) {
+                                                stack.getOrCreateTag().putString(rpggods.item.AltarItem.KEY_DEITY, holder.value().getDeity().get().toString());
+                                            }
+                                            output.accept(stack);
+                                        });
+                            });
+                        })
+                        .build());
     }
 
     public static final class EntityReg {

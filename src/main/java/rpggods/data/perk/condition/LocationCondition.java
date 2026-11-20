@@ -14,9 +14,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.critereon.LightPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import rpggods.RGRegistry;
+import rpggods.util.DeferredHolderSet;
 import rpggods.util.RGComponentUtils;
 import rpggods.util.RGCodecUtils;
 
@@ -46,7 +49,7 @@ public class LocationCondition extends PerkCondition {
             Vec3i.CODEC.optionalFieldOf("offset", Vec3i.ZERO).forGetter(o -> o.offset),
             Codec.BOOL.optionalFieldOf("day").forGetter(o -> Optional.ofNullable(o.day)),
             Codec.BOOL.optionalFieldOf("night").forGetter(o -> Optional.ofNullable(o.night)),
-            ResourceKey.codec(Registries.BIOME).optionalFieldOf("biome").forGetter(o -> Optional.ofNullable(o.biome)),
+            DeferredHolderSet.codec(Registries.BIOME).optionalFieldOf("biome", DeferredHolderSet.empty()).forGetter(o -> o.biome),
             ResourceKey.codec(Registries.STRUCTURE).optionalFieldOf("structure").forGetter(o -> Optional.ofNullable(o.structure)),
             ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("dimension").forGetter(o -> Optional.ofNullable(o.dimension)),
             Codec.BOOL.optionalFieldOf("smokey").forGetter(o -> Optional.ofNullable(o.smokey)),
@@ -60,8 +63,7 @@ public class LocationCondition extends PerkCondition {
     private final Boolean day;
     @Nullable
     private final Boolean night;
-    @Nullable
-    private final ResourceKey<Biome> biome;
+    private final DeferredHolderSet<Biome> biome;
     @Nullable
     private final ResourceKey<Structure> structure;
     @Nullable
@@ -72,14 +74,14 @@ public class LocationCondition extends PerkCondition {
     private final BlockPredicate block;
 
     public LocationCondition(DoublesPosition position, Vec3i offset, Optional<Boolean> day, Optional<Boolean> night,
-                             Optional<ResourceKey<Biome>> biome, Optional<ResourceKey<Structure>> structure,
+                             DeferredHolderSet<Biome> biome, Optional<ResourceKey<Structure>> structure,
                              Optional<ResourceKey<Level>> dimension, Optional<Boolean> smokey,
                              LightPredicate light, BlockPredicate block) {
         this.position = position;
         this.offset = offset;
         this.day = day.orElse(null);
         this.night = night.orElse(null);
-        this.biome = biome.orElse(null);
+        this.biome = biome;
         this.structure = structure.orElse(null);
         this.dimension = dimension.orElse(null);
         this.smokey = smokey.orElse(null);
@@ -120,8 +122,11 @@ public class LocationCondition extends PerkCondition {
             return false;
         }
         // validate biome
-        if(this.biome != null && !level.getBiome(blockpos).is(this.biome)) {
-            return false;
+        if(!this.biome.isEmpty()) {
+            final Registry<Biome> biomeRegistry = context.getRegistryAccess().registryOrThrow(Registries.BIOME);
+            if (!this.biome.get(biomeRegistry).contains(level.getBiome(blockpos))) {
+                return false;
+            }
         }
         // validate structure
         if(this.structure != null && !hasStructure(context.getRegistryAccess(), this.structure, level.structureManager().getAllStructuresAt(blockpos).keySet())) {
@@ -161,9 +166,15 @@ public class LocationCondition extends PerkCondition {
             builder.addAll(this.position.getDescription());
         }
         // biome
-        if(this.biome != null) {
-            Component text = RGComponentUtils.createResourceKeyDescription(this.biome);
-            builder.add(Component.translatable(PREFIX + "location.biome", text));
+        if(!this.biome.isEmpty()) {
+            final Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+            final HolderSet<Biome> holderSet = this.biome.get(biomeRegistry);
+            final List<Component> biomeDescriptions = RGComponentUtils.createHolderSetDescription(biomeRegistry, holderSet,
+                    biome -> biomeRegistry.getResourceKey(biome)
+                            .map(RGComponentUtils::createResourceKeyDescription)
+                            .orElse(Component.literal("?")));
+            final Component delimiter = Component.translatable("favor.perk.condition.or");
+            builder.add(Component.translatable(PREFIX + "location.biome", RGComponentUtils.join(biomeDescriptions, delimiter)));
         }
         // structure
         if(this.structure != null) {

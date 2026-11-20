@@ -50,6 +50,16 @@ public abstract class PerkCondition {
     public abstract Codec<? extends PerkCondition> getCodec();
 
     /**
+     * @return every condition codec contained in this condition tree.
+     * Composite conditions such as {@code and}/{@code or}/{@code not} return
+     * their children's codecs as well, so the perk can be found by the event
+     * that triggers the nested condition.
+     */
+    public java.util.Set<Codec<? extends PerkCondition>> getConditionTypes() {
+        return java.util.Set.of(getCodec());
+    }
+
+    /**
      * @param registryAccess the registry access
      * @return a list of text components that describe this modifier condition
      */

@@ -1,0 +1,21 @@
+{
+  "icon": {
+    "item": "minecraft:cobblestone",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": -9,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:unsmelt"
+    }
+  ],
+  "cooldown": 200,
+  "chance": 0.75
+}

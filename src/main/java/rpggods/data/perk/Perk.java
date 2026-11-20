@@ -87,11 +87,11 @@ public final class Perk {
     public static boolean isFor(final Map.Entry<ResourceKey<Perk>, Perk> entry, final ResourceLocation deityId) {
         // validate perk data
         final Perk perk = entry.getValue();
+        final ResourceLocation perkId = entry.getKey().location();
         if (FavorRange.EMPTY.equals(perk.getRange()) || perk.getActions().isEmpty()) {
             return false;
         }
         // validate resource location
-        final ResourceLocation perkId = entry.getKey().location();
         if(!perkId.getNamespace().equals(deityId.getNamespace()) || !perkId.getPath().contains(deityId.getPath() + "/")) {
             return false;
         }
@@ -151,6 +151,14 @@ public final class Perk {
 
     public Deity getDeity(final RegistryAccess registryAccess) {
         return Deity.getRegistry(registryAccess).get(getDeity());
+    }
+
+    /**
+     * @param registryAccess the registry access
+     * @return the {@link Perk} registry
+     */
+    public static net.minecraft.core.Registry<Perk> getRegistry(final RegistryAccess registryAccess) {
+        return registryAccess.registryOrThrow(RGRegistry.Keys.PERKS);
     }
 
     @Override

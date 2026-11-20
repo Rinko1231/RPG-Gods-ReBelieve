@@ -9,6 +9,9 @@ package rpggods.entity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -38,16 +41,66 @@ import rpggods.data.favor.IFavor;
 import rpggods.data.perk.Affinity;
 import rpggods.data.perk.AffinityType;
 import rpggods.data.perk.Perk;
+import rpggods.data.perk.action.AffinityAction;
+import rpggods.data.perk.action.PerkAction;
 import rpggods.data.tameable.ITameable;
 import rpggods.data.tameable.Tameable;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 public class AffinityGoal {
+
+    /** Cached map of entity ID to affinity type to perk IDs, rebuilt when the registry access changes **/
+    private static RegistryAccess cachedRegistryAccess = null;
+    private static Map<ResourceLocation, Map<AffinityType, List<ResourceLocation>>> cachedAffinityMap = ImmutableMap.of();
+
+    /**
+     * @param registryAccess the registry access
+     * @return a map of entity ID to affinity type to perk IDs
+     */
+    public static Map<ResourceLocation, Map<AffinityType, List<ResourceLocation>>> getAffinityMap(final RegistryAccess registryAccess) {
+        if (registryAccess == cachedRegistryAccess) {
+            return cachedAffinityMap;
+        }
+        final Map<ResourceLocation, Map<AffinityType, List<ResourceLocation>>> builder = new HashMap<>();
+        final Registry<Perk> perkRegistry = Perk.getRegistry(registryAccess);
+        for (Map.Entry<ResourceKey<Perk>, Perk> entry : perkRegistry.entrySet()) {
+            for (PerkAction action : entry.getValue().getActions()) {
+                if (action instanceof AffinityAction affinityAction) {
+                    final ResourceLocation entityId = ForgeRegistries.ENTITY_TYPES.getKey(affinityAction.getEntityType());
+                    if (entityId != null) {
+                        builder.computeIfAbsent(entityId, k -> new HashMap<>())
+                                .computeIfAbsent(affinityAction.getAffinity(), k -> new ArrayList<>())
+                                .add(entry.getKey().location());
+                    }
+                }
+            }
+        }
+        // freeze the map
+        final Map<ResourceLocation, Map<AffinityType, List<ResourceLocation>>> result = new HashMap<>();
+        builder.forEach((entityId, byType) -> {
+            final Map<AffinityType, List<ResourceLocation>> copy = new HashMap<>();
+            byType.forEach((type, ids) -> copy.put(type, List.copyOf(ids)));
+            result.put(entityId, Map.copyOf(copy));
+        });
+        cachedRegistryAccess = registryAccess;
+        cachedAffinityMap = Map.copyOf(result);
+        return cachedAffinityMap;
+    }
+
+    public static List<ResourceLocation> getAffinityPerks(final RegistryAccess registryAccess, final ResourceLocation entityId, final AffinityType type) {
+        return getAffinityMap(registryAccess).getOrDefault(entityId, ImmutableMap.of()).getOrDefault(type, ImmutableList.of());
+    }
+
+    public static Perk getPerk(final RegistryAccess registryAccess, final ResourceLocation perkId) {
+        return Perk.getRegistry(registryAccess).get(perkId);
+    }
 
     private static boolean shouldAttackEntity(LivingEntity target, LivingEntity owner) {
         if(target instanceof Ghast) {
@@ -90,11 +143,11 @@ public class AffinityGoal {
                 boolean isHostile = isHostile(creature, f);
                 // log error if there are conflicts
                 if(isPassive && isHostile) {
-                    final Map<AffinityType, List<ResourceLocation>> affinityMap = RPGGods.AFFINITY.getOrDefault(id, ImmutableMap.of());
-                    final List<FavorRange> passivePerks = affinityMap.getOrDefault(AffinityType.PASSIVE, ImmutableList.of())
-                            .stream().map(r -> RPGGods.PERK_MAP.getOrDefault(id, Perk.EMPTY)).map(Perk::getRange).toList();
-                    final List<FavorRange> hostilePerks = affinityMap.getOrDefault(AffinityType.HOSTILE, ImmutableList.of())
-                            .stream().map(r -> RPGGods.PERK_MAP.getOrDefault(id, Perk.EMPTY)).map(Perk::getRange).toList();;
+                    final RegistryAccess registryAccess = creature.level().registryAccess();
+                    final List<FavorRange> passivePerks = getAffinityPerks(registryAccess, id, AffinityType.PASSIVE)
+                            .stream().map(r -> getPerk(registryAccess, r)).filter(java.util.Objects::nonNull).map(Perk::getRange).toList();
+                    final List<FavorRange> hostilePerks = getAffinityPerks(registryAccess, id, AffinityType.HOSTILE)
+                            .stream().map(r -> getPerk(registryAccess, r)).filter(java.util.Objects::nonNull).map(Perk::getRange).toList();
                     RPGGods.LOGGER.error("Conflicting affinity perks for " + id + " ; Hostile is " + hostilePerks + " and Passive is " + passivePerks);
                     return ImmutablePair.of(false, false);
                 }
@@ -111,9 +164,10 @@ public class AffinityGoal {
      */
     public static boolean isPassive(final LivingEntity creature, final IFavor playerFavor) {
         final ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(creature.getType());
+        final RegistryAccess registryAccess = creature.level().registryAccess();
         Perk p;
-        for(ResourceLocation r : RPGGods.AFFINITY.getOrDefault(id, ImmutableMap.of()).getOrDefault(AffinityType.PASSIVE, ImmutableList.of())) {
-            p = RPGGods.PERK_MAP.get(r);
+        for(ResourceLocation r : getAffinityPerks(registryAccess, id, AffinityType.PASSIVE)) {
+            p = getPerk(registryAccess, r);
             if(p != null && p.getRange().isInRange(playerFavor)) {
                 return true;
             }
@@ -128,9 +182,10 @@ public class AffinityGoal {
      */
     public static boolean isHostile(final LivingEntity creature, final IFavor playerFavor) {
         final ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(creature.getType());
+        final RegistryAccess registryAccess = creature.level().registryAccess();
         Perk p;
-        for(ResourceLocation r : RPGGods.AFFINITY.getOrDefault(id, ImmutableMap.of()).getOrDefault(AffinityType.HOSTILE, ImmutableList.of())) {
-            p = RPGGods.PERK_MAP.get(r);
+        for(ResourceLocation r : getAffinityPerks(registryAccess, id, AffinityType.HOSTILE)) {
+            p = getPerk(registryAccess, r);
             if(p != null && p.getRange().isInRange(playerFavor)) {
                 return true;
             }
@@ -207,13 +262,14 @@ public class AffinityGoal {
             final ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(creature.getType());
             return e -> {
                 if(e instanceof Player && e != creature.getLastHurtByMob() && !isOwnerOrTeam(creature, e)) {
-                    List<ResourceLocation> perks = RPGGods.AFFINITY.getOrDefault(id, ImmutableMap.of()).getOrDefault(AffinityType.FLEE, ImmutableList.of());
+                    final RegistryAccess registryAccess = creature.level().registryAccess();
+                    List<ResourceLocation> perks = getAffinityPerks(registryAccess, id, AffinityType.FLEE);
                     if(perks.size() > 0) {
                         IFavor favor = RPGGods.getFavor(e).orElse(Favor.EMPTY);
                         if(favor.isEnabled()) {
                             Perk p;
                             for(ResourceLocation r : perks) {
-                                p = RPGGods.PERK_MAP.get(r);
+                                p = getPerk(registryAccess, r);
                                 if(p != null && p.getRange().isInRange(favor)) {
                                     return true;
                                 }

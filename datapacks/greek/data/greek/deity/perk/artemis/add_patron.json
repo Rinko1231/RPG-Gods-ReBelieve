@@ -1,0 +1,29 @@
+{
+  "icon": {
+    "item": "minecraft:bow",
+    "fancy": true,
+    "color": 16073455
+  },
+  "range": {
+    "deity": "greek:artemis",
+    "minlevel": 10,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:ritual",
+    "item": {
+      "items": "minecraft:bow"
+    }
+  },
+  "action": [
+    {
+      "type": "rpggods:patron",
+      "patron": {
+        "deity": "greek:artemis",
+        "penalty": -1000,
+        "decay": -0.5,
+        "perk_chance": 0.15
+      }
+    }
+  ]
+}

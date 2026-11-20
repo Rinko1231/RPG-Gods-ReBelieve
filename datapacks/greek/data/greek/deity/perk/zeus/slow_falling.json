@@ -1,0 +1,31 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:phantom_membrane",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:zeus",
+    "minlevel": 3,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:random_tick"
+  },
+  "action": [
+    {
+      "type": "rpggods:potion",
+      "effect": {
+        "id": "minecraft:slow_falling",
+        "duration": 1100,
+        "amplifier": 0,
+        "visible": false
+      }
+    }
+  ],
+  "cooldown_category": "zeus:potion",
+  "cooldown": 5100,
+  "chance": 0.012
+}

@@ -1,0 +1,21 @@
+{
+  "icon": {
+    "item": "minecraft:iron_nugget",
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:hephaestus",
+    "minlevel": 3,
+    "maxlevel": 5
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:autosmelt"
+    }
+  ],
+  "cooldown": 250,
+  "chance": 0.1
+}

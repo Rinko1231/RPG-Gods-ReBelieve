@@ -177,7 +177,7 @@ public interface IFavor extends INBTSerializable<CompoundTag> {
      * @return the cooldown tracker for the {@link Offering} with the given ID
      **/
     default Cooldown getOfferingCooldown(final ResourceLocation id) {
-        return getOfferingCooldownMap().computeIfAbsent(id, r -> RPGGods.OFFERING_MAP.getOrDefault(r, Offering.EMPTY).createCooldown());
+        return getOfferingCooldownMap().computeIfAbsent(id, r -> Cooldown.empty());
     }
 
     /**
@@ -194,7 +194,7 @@ public interface IFavor extends INBTSerializable<CompoundTag> {
      * @return the cooldown tracker for the {@link Sacrifice} with the given ID
      **/
     default Cooldown getSacrificeCooldown(final ResourceLocation id) {
-        return getSacrificeCooldownMap().computeIfAbsent(id, r -> RPGGods.SACRIFICE_MAP.getOrDefault(r, Sacrifice.EMPTY).createCooldown());
+        return getSacrificeCooldownMap().computeIfAbsent(id, r -> Cooldown.empty());
     }
 
     /**

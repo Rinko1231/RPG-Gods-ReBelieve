@@ -46,6 +46,16 @@ public class AndCondition extends PerkCondition {
     }
 
     @Override
+    public java.util.Set<Codec<? extends PerkCondition>> getConditionTypes() {
+        final java.util.Set<Codec<? extends PerkCondition>> set = new java.util.HashSet<>();
+        set.add(getCodec());
+        for(PerkCondition child : children) {
+            set.addAll(child.getConditionTypes());
+        }
+        return set;
+    }
+
+    @Override
     public Component createDescription(final RegistryAccess registryAccess) {
         // collect list of child descriptions
         final List<Component> list = new ArrayList<>(children.size());

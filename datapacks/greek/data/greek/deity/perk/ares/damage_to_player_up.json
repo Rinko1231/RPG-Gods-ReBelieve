@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:iron_sword",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:ares",
+    "minlevel": 5,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:player_hurt_entity",
+    "entity": "minecraft:player"
+  },
+  "action": [
+    {
+      "type": "rpggods:damage",
+      "multiplier": 1.05
+    }
+  ],
+  "cooldown_category": "ares:damage_up",
+  "cooldown": 700,
+  "chance": 0.5
+}

@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:iron_sword",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:athena",
+    "minlevel": 5,
+    "maxlevel": 10
+  },
+  "condition": {
+    "type": "rpggods:player_hurt_entity",
+    "entity": "minecraft:spider"
+  },
+  "action": [
+    {
+      "type": "rpggods:damage",
+      "multiplier": 1.25
+    }
+  ],
+  "cooldown_category": "athena:damage_to_spider_up",
+  "cooldown": 700,
+  "chance": 0.35
+}

@@ -1,0 +1,26 @@
+{
+  "icon": {
+    "item": {
+      "id": "minecraft:rotten_flesh",
+      "Count": 1
+    },
+    "color": 14277081
+  },
+  "range": {
+    "deity": "greek:athena",
+    "minlevel": -3,
+    "maxlevel": -10
+  },
+  "condition": {
+    "type": "rpggods:true"
+  },
+  "action": [
+    {
+      "type": "rpggods:xp",
+      "multiplier": 0.9
+    }
+  ],
+  "cooldown_category": "xp_down",
+  "cooldown": 200,
+  "chance": 0.2
+}
