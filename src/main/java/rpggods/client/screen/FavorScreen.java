@@ -35,6 +35,7 @@ import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.joml.Quaternionf;
 import rpggods.RPGGods;
+import rpggods.RGRegistry;
 import rpggods.data.deity.Altar;
 import rpggods.data.deity.Deity;
 import rpggods.data.deity.DeityContainer;
@@ -43,6 +44,7 @@ import rpggods.data.deity.Sacrifice;
 import rpggods.data.favor.FavorLevel;
 import rpggods.data.favor.IFavor;
 import rpggods.data.perk.Perk;
+import rpggods.data.perk.action.FavorAmountAction;
 import rpggods.data.perk.action.PerkAction;
 import rpggods.data.perk.condition.EffectStartCondition;
 import rpggods.data.perk.condition.EntityCondition;
@@ -79,7 +81,7 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
 
     private static final int PAGE_WIDTH = 42;
     private static final int PAGE_HEIGHT = 32;
-    private static final int PAGE_COUNT = 4;
+    private static final int PAGE_COUNT = 5;
 
     private static final int ARROW_WIDTH = 12;
     private static final int ARROW_HEIGHT = 17;
@@ -124,6 +126,13 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
     private static final int SACRIFICE_HEIGHT = 16;
     private static final int SACRIFICE_COUNT = 7;
 
+    // Spells page (favor gained from spell events, e.g. Iron's Spellbooks)
+    private static final int SPELL_X = 32;
+    private static final int SPELL_Y = 50;
+    private static final int SPELL_WIDTH = 18 * 10;
+    private static final int SPELL_HEIGHT = 18;
+    private static final int SPELL_COUNT = 6;
+
     // Perks page
     private static final int PERK_WIDTH = 22;
     private static final int PERK_HEIGHT = 22;
@@ -145,6 +154,8 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
     private static final Map<ResourceLocation, List<ImmutablePair<ResourceLocation, Offering>>> tradeMap = new HashMap<>();
     // Key: deity ID; Value: map of Sacrifice ID and Sacrifice
     private static final Map<ResourceLocation, List<ImmutablePair<ResourceLocation, Sacrifice>>> sacrificeMap = new HashMap<>();
+    // Key: deity ID; Value: spell event perks (spell_cast / spell_damage / spell_heal)
+    private static final Map<ResourceLocation, List<Perk>> spellMap = new HashMap<>();
     // Key: deity ID; Value: Map of perk level to list of available perks
     private static final Map<ResourceLocation, Map<Integer, List<Perk>>> perkMap = new HashMap<>();
     private Inventory inventory;
@@ -184,6 +195,11 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
     private final FavorScreen.SacrificeButton[] sacrificeButtons = new FavorScreen.SacrificeButton[SACRIFICE_COUNT];
     private int sacrificeCount;
 
+    // Spells page
+    private TextButton spellTitle;
+    private final FavorScreen.SpellButton[] spellButtons = new FavorScreen.SpellButton[SPELL_COUNT];
+    private int spellCount;
+
     // Perk page
     private final Map<ResourceLocation, List<FavorScreen.PerkButton>> perkButtonMap = new HashMap<>();
     private final Map<Integer, FavorScreen.TextButton> perkLevelButtonMap = new HashMap<>();
@@ -210,6 +226,7 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         tradeMap.clear();
         sacrificeMap.clear();
         perkMap.clear();
+        spellMap.clear();
 
         // resolve the client side deity containers, populating them if necessary
         Map<ResourceLocation, DeityContainer> containers = DeityContainer.getRegistry(true);
@@ -232,6 +249,8 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
             offeringMap.put(d.getId(), new ArrayList<>());
             tradeMap.put(d.getId(), new ArrayList<>());
             sacrificeMap.put(d.getId(), new ArrayList<>());
+            // spell event perks are shown on their own page
+            spellMap.put(d.getId(), new ArrayList<>());
             // add entries to perk map based on favor level min and max
             final FavorLevel favorLevel = favor.getFavor(d.getId());
             final Map<Integer, List<Perk>> perkSubMap = new HashMap<>();
@@ -272,6 +291,11 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
                 }
                 // skip hidden perks
                 if (perk.getIcon().isHidden()) {
+                    continue;
+                }
+                // spell event perks go to the spells page, not the perks page
+                if (isSpellPerk(perk)) {
+                    spellMap.get(d.getId()).add(perk);
                     continue;
                 }
                 // determine which level to place the perk
@@ -364,6 +388,13 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         for (int i = 0; i < SACRIFICE_COUNT; i++) {
             sacrificeButtons[i] = this.addRenderableWidget(new SacrificeButton(this, i, this.leftPos + SACRIFICE_X, this.topPos + SACRIFICE_Y + i * SACRIFICE_HEIGHT));
         }
+        // add spell UI elements
+        text = Component.translatable("gui.favor.spells").withStyle(ChatFormatting.BLACK, ChatFormatting.UNDERLINE);
+        tooltip = Component.translatable("gui.favor.spells.tooltip");
+        spellTitle = this.addRenderableWidget(new TextButton(this, this.leftPos + SPELL_X, this.topPos + SPELL_Y - 16, SPELL_WIDTH, 12, text, tooltip));
+        for (int i = 0; i < SPELL_COUNT; i++) {
+            spellButtons[i] = this.addRenderableWidget(new SpellButton(this, i, this.leftPos + SPELL_X, this.topPos + SPELL_Y + i * SPELL_HEIGHT));
+        }
         // add perk UI elements
         for (Map.Entry<ResourceLocation, Map<Integer, List<Perk>>> entry : perkMap.entrySet()) {
             startX = this.leftPos + PERK_BOUNDS_X;
@@ -425,6 +456,9 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
             case SACRIFICES:
                 renderSacrificesPage(graphics);
                 break;
+            case SPELLS:
+                renderSpellsPage(graphics);
+                break;
             case PERKS:
                 // Perks page is rendered later
                 break;
@@ -466,6 +500,10 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         } else if (page == Page.SACRIFICES) {
             if (sacrificeCount > 0) {
                 multiplier = 1.0F / (float) sacrificeCount;
+            }
+        } else if (page == Page.SPELLS) {
+            if (spellCount > 0) {
+                multiplier = 1.0F / (float) spellCount;
             }
         }
         return this.scrollButton.mouseScrolled(mouseX, mouseY, scrollAmount * multiplier);
@@ -513,6 +551,7 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         tradeMap.clear();
         sacrificeMap.clear();
         perkMap.clear();
+        spellMap.clear();
     }
 
     private void renderSummaryPage(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
@@ -562,6 +601,11 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
     }
 
     private void renderSacrificesPage(GuiGraphics graphics) {
+        // draw scroll background
+        graphics.blit(SCREEN_WIDGETS, this.leftPos + SCROLL_X, this.topPos + SCROLL_Y, 188, 0, SCROLL_WIDTH, SCROLL_HEIGHT);
+    }
+
+    private void renderSpellsPage(GuiGraphics graphics) {
         // draw scroll background
         graphics.blit(SCREEN_WIDGETS, this.leftPos + SCROLL_X, this.topPos + SCROLL_Y, 188, 0, SCROLL_WIDTH, SCROLL_HEIGHT);
     }
@@ -645,6 +689,9 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
             for (SacrificeButton b : sacrificeButtons) {
                 if (b != null) b.visible = false;
             }
+            for (SpellButton b : spellButtons) {
+                if (b != null) b.visible = false;
+            }
             for (List<PerkButton> l : perkButtonMap.values()) {
                 for (PerkButton b : l) {
                     b.setEnabled(false);
@@ -656,6 +703,7 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
             if (offeringTitle != null) offeringTitle.visible = false;
             if (tradeTitle != null) tradeTitle.visible = false;
             if (sacrificeTitle != null) sacrificeTitle.visible = false;
+            if (spellTitle != null) spellTitle.visible = false;
             if (scrollButton != null) {
                 scrollButton.visible = false;
             }
@@ -708,6 +756,20 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
                 // scroll
                 scrollVisible = true;
                 scrollEnabled = (sacrificeSize > sacrificeCount);
+                break;
+            case SPELLS:
+                int spellSize = spellMap.getOrDefault(deity, ImmutableList.of()).size();
+                spellCount = Math.min(SPELL_COUNT, spellSize);
+                int maxSpellStart = Math.max(0, spellSize - spellCount);
+                scrollIndex = (int) Math.round(scrollButton.getScrollAmount() * maxSpellStart);
+                for (int i = 0; i < SPELL_COUNT; i++) {
+                    spellButtons[i].updateSpell(deity, scrollIndex);
+                }
+                // title
+                spellTitle.visible = true;
+                // scroll
+                scrollVisible = true;
+                scrollEnabled = (spellSize > spellCount);
                 break;
             case PERKS:
                 // show or hide perks
@@ -767,6 +829,7 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         boolean page1 = page == Page.OFFERINGS;
         boolean page2 = page == Page.SACRIFICES;
         boolean page3 = page == Page.PERKS;
+        boolean page4 = page == Page.SPELLS;
         // summary page
         // nothing
         // offering page
@@ -782,6 +845,11 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         sacrificeTitle.visible = page2;
         for (SacrificeButton b : sacrificeButtons) {
             b.visible = page2;
+        }
+        // spells page
+        spellTitle.visible = page4;
+        for (SpellButton b : spellButtons) {
+            b.visible = page4;
         }
         // perk page
         for (List<PerkButton> l : perkButtonMap.values()) {
@@ -821,6 +889,14 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
                 // update all buttons with the calculated scroll index
                 for (int i = 0; i < SACRIFICE_COUNT; i++) {
                     sacrificeButtons[i].updateSacrifice(deity, scrollIndex);
+                }
+                break;
+            case SPELLS:
+                int spellSize = spellMap.getOrDefault(deity, ImmutableList.of()).size();
+                int maxSpellStart = Math.max(0, spellSize - Math.min(SPELL_COUNT, spellSize));
+                scrollIndex = (int) Math.round(amount * maxSpellStart);
+                for (int i = 0; i < SPELL_COUNT; i++) {
+                    spellButtons[i].updateSpell(deity, scrollIndex);
                 }
                 break;
             case SUMMARY:
@@ -1014,6 +1090,21 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         poseStack.translate(x / scale, y, 101);
         graphics.blit(SCREEN_WIDGETS, 0, 0, 0, 250, 18, 2);
         poseStack.popPose();
+    }
+
+    /**
+     * @param perk the perk
+     * @return true if the perk is triggered by a spell event and should be shown on the spells page
+     */
+    private static boolean isSpellPerk(final Perk perk) {
+        for (Codec<? extends PerkCondition> type : perk.getCondition().getConditionTypes()) {
+            if (type == RGRegistry.PerkConditionReg.SPELL_CAST.get()
+                    || type == RGRegistry.PerkConditionReg.SPELL_DAMAGE.get()
+                    || type == RGRegistry.PerkConditionReg.SPELL_HEAL.get()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1480,6 +1571,81 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         }
     }
 
+    protected class SpellButton extends Button implements TooltipContent {
+        protected int id;
+        protected Perk perk;
+        protected Component conditionText = Component.empty();
+        protected Component actionText = Component.empty();
+        protected final List<Component> tooltip = new ArrayList<>();
+
+        public SpellButton(final FavorScreen gui, final int index, int x, int y) {
+            super(x, y, SPELL_WIDTH, SPELL_HEIGHT, Component.empty(), b -> {
+            }, Button.DEFAULT_NARRATION);
+            this.id = index;
+        }
+
+        @Override
+        public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+            if (this.visible && this.perk != null) {
+                // draw icon
+                graphics.renderItem(perk.getIcon().getItem(), getX(), getY() + 1);
+                // draw condition text
+                graphics.drawString(FavorScreen.this.font, conditionText, getX() + 20, getY() + 5, 0xFFFFFF, false);
+                // draw action text, right aligned
+                if (!actionText.getString().isEmpty()) {
+                    graphics.drawString(FavorScreen.this.font, actionText,
+                            getX() + SPELL_WIDTH - FavorScreen.this.font.width(actionText) - 2, getY() + 5, 0xFFFFFF, false);
+                }
+            }
+        }
+
+        public void updateSpell(final ResourceLocation deity, final int startIndex) {
+            final List<Perk> spells = FavorScreen.this.spellMap.getOrDefault(deity, ImmutableList.of());
+            final int index = startIndex + id;
+            if (index >= 0 && index < spells.size()) {
+                this.visible = true;
+                this.perk = spells.get(index);
+                this.conditionText = perk.getCondition() != null
+                        ? perk.getCondition().getDescription(FavorScreen.this.registryAccess).copy().withStyle(ChatFormatting.BLACK)
+                        : Component.empty();
+                this.actionText = Component.empty();
+                this.tooltip.clear();
+                // condition description
+                if (!conditionText.getString().isEmpty()) {
+                    this.tooltip.add(conditionText.copy().withStyle(ChatFormatting.DARK_GRAY));
+                }
+                // action descriptions
+                for (PerkAction action : perk.getActions()) {
+                    if (action.isHidden()) {
+                        continue;
+                    }
+                    if (actionText.getString().isEmpty()) {
+                        if (action instanceof FavorAmountAction favorAction) {
+                            final int min = favorAction.getAmount().getMinValue();
+                            final int max = favorAction.getAmount().getMaxValue();
+                            final String amount = "+" + min + (min != max ? "-" + max : "");
+                            this.actionText = Component.literal(amount).withStyle(ChatFormatting.DARK_GREEN);
+                        } else {
+                            this.actionText = action.getDescription(FavorScreen.this.registryAccess).copy().withStyle(ChatFormatting.DARK_GREEN);
+                        }
+                    }
+                    this.tooltip.add(action.getTitle(FavorScreen.this.registryAccess).copy().withStyle(ChatFormatting.BLACK, ChatFormatting.UNDERLINE));
+                    this.tooltip.add(action.getDescription(FavorScreen.this.registryAccess).copy().withStyle(ChatFormatting.BLUE));
+                }
+            } else {
+                this.visible = false;
+                this.perk = null;
+            }
+        }
+
+        @Override
+        public void renderTooltipContent(GuiGraphics graphics, int mouseX, int mouseY) {
+            if (this.perk != null && !this.tooltip.isEmpty()) {
+                graphics.renderTooltip(FavorScreen.this.font, this.tooltip, Optional.empty(), mouseX, mouseY);
+            }
+        }
+    }
+
     protected class SacrificeButton extends Button implements TooltipContent {
         protected int id;
         protected Sacrifice sacrifice;
@@ -1748,7 +1914,8 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         SUMMARY("gui.favor.summary"),
         OFFERINGS("gui.favor.offerings"),
         SACRIFICES("gui.favor.sacrifices"),
-        PERKS("gui.favor.perks");
+        PERKS("gui.favor.perks"),
+        SPELLS("gui.favor.spells");
 
         private String title;
 

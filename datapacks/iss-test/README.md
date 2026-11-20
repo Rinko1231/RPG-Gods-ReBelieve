@@ -8,7 +8,7 @@ Test data pack for the optional **Iron's Spellbooks** integration:
 * perk `iss:iron/fire_spell_power` grants **+30% fire spell power**
   (`irons_spellbooks:fire_spell_power`, `add_multiplied_base`) at favor level 3
   and above; the modifier is removed again when favor drops below 3
-* spell perks (visible in the favor GUI's **Perks** tab):
+* spell perks (visible in the favor GUI's **Spells** tab):
   * `spell_cast_firebolt` — casting `irons_spellbooks:firebolt` grants 5 favor
   * `spell_damage_small` — `irons_spellbooks:icicle` dealing 5–9 damage grants 1 favor
   * `spell_damage_large` — `irons_spellbooks:icicle` dealing 10+ damage grants 2 favor

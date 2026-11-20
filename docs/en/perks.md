@@ -150,7 +150,7 @@ Spellbooks is not installed.
   (spell damage or healing, in half hearts). Damage uses the pre-armor amount
   reported by Iron's Spellbooks' damage event.
 * The perks are ordinary data pack perks, so they show up in the favor GUI's
-  **Perks** tab with their condition and action tooltips. A `rpggods:favor`
+  **Spells** tab with their condition and action tooltips. A `rpggods:favor`
   action is what actually grants favor.
 * Cooldowns are controlled by the perk's `cooldown` / `cooldown_category`
   fields. Set `"cooldown": 0` for unlimited testing; use one category per event

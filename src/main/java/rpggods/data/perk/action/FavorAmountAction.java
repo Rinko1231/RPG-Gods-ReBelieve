@@ -72,6 +72,18 @@ public class FavorAmountAction extends PerkAction {
         return Component.translatable(PREFIX + "favor" + SUFFIX + "." + this.type.getSerializedName(), boundsComponent, deityName);
     }
 
+    public ResourceLocation getDeity() {
+        return deity;
+    }
+
+    public IntProvider getAmount() {
+        return amount;
+    }
+
+    public boolean isLevels() {
+        return this.type == Type.LEVELS;
+    }
+
     @Override
     public Codec<? extends PerkAction> getCodec() {
         return RGRegistry.PerkActionReg.FAVOR_AMOUNT.get();

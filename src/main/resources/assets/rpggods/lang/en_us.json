@@ -85,6 +85,8 @@
   "gui.favor.sacrifices.tooltip": "Creatures that can be killed to gain favor",
   "gui.favor.perks": "Perks",
   "gui.favor.perks.tooltip": "Blessings and abilities that you earn according to your favor",
+  "gui.favor.spells": "Spellcraft",
+  "gui.favor.spells.tooltip": "Ways to earn favor by casting spells",
   "gui.favor.offering.function.tooltip": "Something special may happen when you offer this item",
   "gui.favor.offering.unlock.single.tooltip": "Unlock at favor level %1$s",
   "gui.favor.offering.unlock.multiple.tooltip": "Unlock with favor level %1$s to %2$s",
