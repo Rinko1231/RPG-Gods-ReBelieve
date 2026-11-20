@@ -30,8 +30,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.joml.Quaternionf;
 import rpggods.RPGGods;
@@ -71,6 +73,7 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
     // CONSTANTS
     private static final ResourceLocation SCREEN_TEXTURE = new ResourceLocation(RPGGods.MODID, "textures/gui/favor/favor.png");
     private static final ResourceLocation SCREEN_WIDGETS = new ResourceLocation(RPGGods.MODID, "textures/gui/favor/favor_widgets.png");
+    private static final ResourceLocation SPELL_BOOK_ITEM = new ResourceLocation("irons_spellbooks", "iron_spell_book");
 
     private static final int SCREEN_WIDTH = 256;
     private static final int SCREEN_HEIGHT = 168;
@@ -1878,6 +1881,7 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
         private final int u;
         private final int v;
         private final Component tooltip;
+        private final ItemStack spellBookIcon;
 
         public PageButton(final FavorScreen screenIn, final int x, final int y, final int u, final int v,
                           final Component title, final Component tooltip, final Page page) {
@@ -1886,6 +1890,8 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
             this.u = u;
             this.v = v;
             this.tooltip = tooltip;
+            final Item spellBook = page == Page.SPELLS ? ForgeRegistries.ITEMS.getValue(SPELL_BOOK_ITEM) : null;
+            this.spellBookIcon = spellBook != null ? new ItemStack(spellBook) : ItemStack.EMPTY;
         }
 
         @Override
@@ -1893,12 +1899,17 @@ public class FavorScreen extends AbstractContainerScreen<FavorContainerMenu> {
             if (this.visible) {
                 final boolean selected = FavorScreen.this.page == this.page;
                 int dY = selected ? 0 : -4;
-                int uX = (page.ordinal() % PAGE_COUNT) * PAGE_WIDTH;
+                // the fifth tab background lives at x=210 because x=168..210 overlaps the scrollbar
+                int uX = page == Page.SPELLS ? 210 : (page.ordinal() % PAGE_COUNT) * PAGE_WIDTH;
                 int vY = 64 + (selected ? this.height : 0);
                 // draw tab
                 graphics.blit(SCREEN_WIDGETS, getX(), getY() - dY, uX, vY, this.width, this.height + dY);
                 // draw icon
-                graphics.blit(SCREEN_WIDGETS, getX() + (this.width - 18) / 2, getY() + dY + 2 + (this.height - 18) / 2, u, v, 18, 18);
+                if (page == Page.SPELLS && !spellBookIcon.isEmpty()) {
+                    graphics.renderItem(spellBookIcon, getX() + (this.width - 16) / 2, getY() + dY + 2 + (this.height - 16) / 2);
+                } else {
+                    graphics.blit(SCREEN_WIDGETS, getX() + (this.width - 18) / 2, getY() + dY + 2 + (this.height - 18) / 2, u, v, 18, 18);
+                }
             }
         }
 

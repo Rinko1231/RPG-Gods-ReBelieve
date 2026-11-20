@@ -1,2 +1,2 @@
 # set weather to thundering
-weather thunder 1
+weather thunder

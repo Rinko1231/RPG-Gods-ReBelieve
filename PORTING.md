@@ -84,8 +84,9 @@ Conversion summary (script: `reference/greek/convert.py`):
 * Old `data` fields were expanded into the new fields (`item` predicates,
   `deity`, `effect`, `slot`/`percent`, `amount`, `id`/`nbt` for summons, ...).
 * Deity `gender` is filled in from each matching altar's `female` flag.
-* `weather clear 0` / `weather thunder 0` became `1` because 1.20.1 rejects a
-  zero duration.
+* `weather clear 0` / `weather thunder 0` lost their zero duration, so the
+  command uses the vanilla default weather duration instead of failing or
+  lasting a single tick.
 * `LocationCondition` now accepts biome tags/holder sets, because the Greek pack
   uses conditions such as `#minecraft:is_ocean`.
 

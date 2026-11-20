@@ -86,7 +86,7 @@
   "gui.favor.perks": "恩赐",
   "gui.favor.perks.tooltip": "根据你的恩宠获得的祝福与能力",
   "gui.favor.spells": "法术",
-  "gui.favor.spells.tooltip": "通过施法赚取恩宠的方法",
+  "gui.favor.spells.tooltip": "可以释放以获得恩宠的法术",
   "gui.favor.offering.function.tooltip": "献上该物品时可能发生特殊事件",
   "gui.favor.offering.unlock.single.tooltip": "恩宠等级 %1$s 解锁",
   "gui.favor.offering.unlock.multiple.tooltip": "恩宠等级 %1$s 至 %2$s 解锁",
