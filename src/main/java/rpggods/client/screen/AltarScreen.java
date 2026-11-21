@@ -56,6 +56,8 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
     private static final int GENDER_Y = 87;
     private static final int SLIM_X = 45;
     private static final int SLIM_Y = 87;
+    private static final int SMALL_X = 83;
+    private static final int SMALL_Y = 87;
     private static final int PRESET_X = 104;
     private static final int PRESET_Y = 87;
     private static final int RESET_X = 123;
@@ -84,6 +86,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
     private Optional<String> name;
     private boolean female;
     private boolean slim;
+    private boolean small;
     private AltarPose pose;
     private boolean poseLocked;
 
@@ -93,6 +96,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
     private final PartButton[] partButtons = new PartButton[HumanoidPart.values().length];
     private IconButton genderButton;
     private IconButton slimButton;
+    private IconButton smallButton;
     private IconButton presetButton;
     private IconButton resetButton;
     private HumanoidPart selectedPart = HumanoidPart.BODY;
@@ -115,6 +119,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
         }
         female = screenContainer.getEntity().isFemale();
         slim = altar.isSlim();
+        small = screenContainer.getEntity().isSmall();
         pose = altar.getPose();
         poseLocked = altar.isPoseLocked();
     }
@@ -156,7 +161,15 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
         }));
         // add gender button
         final Component titleGender = Component.translatable("gui.altar.gender");
-        genderButton = this.addRenderableWidget(new IconButton(this, this.leftPos + GENDER_X, this.topPos + GENDER_Y, 0, 218, titleGender, button -> AltarScreen.this.female = !AltarScreen.this.female) {
+        genderButton = this.addRenderableWidget(new IconButton(this, this.leftPos + GENDER_X, this.topPos + GENDER_Y, 0, 218, titleGender, button -> {
+            AltarScreen.this.female = !AltarScreen.this.female;
+            if (AltarScreen.this.female) {
+                AltarScreen.this.small = false;
+                AltarScreen.this.slim = true;
+            } else {
+                AltarScreen.this.slim = false;
+            }
+        }) {
             @Override
             public int getIconX() {
                 return super.getIconX() + (AltarScreen.this.female ? 0 : this.width);
@@ -164,10 +177,29 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
         });
         // add slim button
         final Component titleSlim = Component.translatable("gui.altar.slim");
-        slimButton = this.addRenderableWidget(new IconButton(this, this.leftPos + SLIM_X, this.topPos + SLIM_Y, 32, 218, titleSlim, button -> AltarScreen.this.slim = !AltarScreen.this.slim) {
+        slimButton = this.addRenderableWidget(new IconButton(this, this.leftPos + SLIM_X, this.topPos + SLIM_Y, 32, 218, titleSlim, button -> {
+            AltarScreen.this.slim = !AltarScreen.this.slim;
+            if (AltarScreen.this.slim) {
+                AltarScreen.this.small = false;
+            }
+        }) {
             @Override
             public int getIconX() {
                 return super.getIconX() + (AltarScreen.this.slim ? 0 : this.width);
+            }
+        });
+        // add small/baby button
+        final Component titleSmall = Component.translatable("gui.altar.small");
+        smallButton = this.addRenderableWidget(new IconButton(this, this.leftPos + SMALL_X, this.topPos + SMALL_Y, 64, 218, titleSmall, button -> {
+            AltarScreen.this.small = !AltarScreen.this.small;
+            if (AltarScreen.this.small) {
+                AltarScreen.this.female = false;
+                AltarScreen.this.slim = false;
+            }
+        }) {
+            @Override
+            public int getIconX() {
+                return super.getIconX() + (AltarScreen.this.small ? 0 : this.width);
             }
         });
         // add sliders
@@ -268,7 +300,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
         super.removed();
         this.menu.setChanged();
         // send update packet to server
-        RPGGods.CHANNEL.sendToServer(new CUpdateAltarPacket(this.menu.getEntity().getId(), this.pose, this.female, this.slim, this.name.orElse("")));
+        RPGGods.CHANNEL.sendToServer(new CUpdateAltarPacket(this.menu.getEntity().getId(), this.pose, this.female, this.slim, this.small, this.name.orElse("")));
     }
 
     @Override
@@ -310,6 +342,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
         sliderAngleZ.visible = tab0AndPose;
         genderButton.visible = tab0AndPose;
         slimButton.visible = tab0AndPose;
+        smallButton.visible = tab0AndPose;
         presetButton.visible = tab0AndPose;
         resetButton.visible = tab0AndPose;
         for(PartButton pb : partButtons) {
@@ -335,6 +368,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
         if(!poseLocked) {
             entity.setFemale(female);
             entity.setSlim(slim);
+            entity.setSmall(small);
             entity.setAltarPose(this.pose);
         }
         if(name.isPresent() && !nameField.isFocused() &&

@@ -15,8 +15,10 @@ Test data pack for the optional **Iron's Spellbooks** integration:
   * `spell_heal` — any spell healing 1+ grants 2 favor
 
 All spell perks use `"cooldown": 0` so they can be tested without waiting. The
-perk `cooldown` / `cooldown_category` fields are the data pack's throttle; there
-is no built-in max-uses limit for spell events.
+perk `cooldown` / `cooldown_category` fields are the data pack's throttle.
+Spell conditions are unlimited by default; add `"maxuses": 10` to a condition to
+cap it. The counter is a lifetime counter per player; omitted or `0`/negative
+means unlimited, and `/favor reset` clears it.
 
 Note: the attribute id is `irons_spellbooks:fire_spell_power`. Any attribute id
 can be used in an `rpggods:attribute` action; missing attributes are ignored.

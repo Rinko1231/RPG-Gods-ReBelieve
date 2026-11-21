@@ -13,12 +13,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import rpggods.RGRegistry;
 import rpggods.util.RGComponentUtils;
+import rpggods.util.SpellUsage;
 
 import java.util.Optional;
 
 /**
- * Matches when a spell deals damage. {@code spell} limits the condition to one spell id and
- * {@code min_amount} / {@code max_amount} limit it to a damage range (in half hearts).
+ * Matches when a spell deals damage. {@code spell} limits the condition to one spell id,
+ * {@code min_amount} / {@code max_amount} limit it to a damage range, and {@code maxuses}
+ * limits how many times the perk can trigger for a player (omitted or <= 0 is unlimited).
  * <p>
  * Note that the amount is the pre-armor amount from the spell damage event.
  */
@@ -27,17 +29,20 @@ public class SpellDamageCondition extends PerkCondition {
     public static final Codec<SpellDamageCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.optionalFieldOf("spell").forGetter(o -> o.spell),
             Codec.INT.optionalFieldOf("min_amount").forGetter(o -> o.minAmount),
-            Codec.INT.optionalFieldOf("max_amount").forGetter(o -> o.maxAmount)
+            Codec.INT.optionalFieldOf("max_amount").forGetter(o -> o.maxAmount),
+            Codec.INT.optionalFieldOf("maxuses").forGetter(o -> o.maxUses)
     ).apply(instance, SpellDamageCondition::new));
 
     private final Optional<ResourceLocation> spell;
     private final Optional<Integer> minAmount;
     private final Optional<Integer> maxAmount;
+    private final Optional<Integer> maxUses;
 
-    public SpellDamageCondition(Optional<ResourceLocation> spell, Optional<Integer> minAmount, Optional<Integer> maxAmount) {
+    public SpellDamageCondition(Optional<ResourceLocation> spell, Optional<Integer> minAmount, Optional<Integer> maxAmount, Optional<Integer> maxUses) {
         this.spell = spell;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
+        this.maxUses = maxUses;
     }
 
     @Override
@@ -54,6 +59,12 @@ public class SpellDamageCondition extends PerkCondition {
         }
         if (spell.isPresent() && !context.getData().map(spell.get()::equals).orElse(false)) {
             return false;
+        }
+        if (maxUses.isPresent() && maxUses.get() > 0) {
+            if (!SpellUsage.canUse(context.getPlayer(), context.getPerkId().orElse(null), maxUses.get())) {
+                return false;
+            }
+            SpellUsage.addUse(context.getPlayer(), context.getPerkId().orElse(null));
         }
         return true;
     }

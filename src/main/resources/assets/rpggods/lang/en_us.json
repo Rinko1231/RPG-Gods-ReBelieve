@@ -64,6 +64,7 @@
   "gui.altar.rotation": "%1$s Angle: %2$s",
   "gui.altar.gender": "Gender",
   "gui.altar.slim": "Slim Arms",
+  "gui.altar.small": "Small",
   "gui.altar.preset": "Preset",
   "gui.altar.head": "Head",
   "gui.altar.body": "Body",

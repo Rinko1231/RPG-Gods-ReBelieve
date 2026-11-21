@@ -585,6 +585,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         final Deity deity = altar.getDeity().isPresent() ? Deity.getRegistry(level().registryAccess()).get(altar.getDeity().get()) : null;
         setFemale(altar.isFemale() || (deity != null && deity.getGender() == Deity.Gender.FEMALE));
         setSlim(altar.isSlim());
+        setSmall(altar.isSmall());
         setArmorLocked(altar.getItems().isArmorLocked());
         setHandsLocked(altar.getItems().isHandsLocked());
         setBlockLocked(altar.getItems().isBlockLocked());
@@ -661,6 +662,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         byte flags = 0;
         if(female) flags = (byte) (flags | 0x01);
         if(altar.isSlim()) flags = (byte) (flags | 0x02);
+        if(altar.isSmall()) flags = (byte) (flags | 0x04);
         // write flags
         compoundTag.putByte(KEY_FLAGS, flags);
         // determine locked flags
@@ -720,7 +722,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         boolean enabled = true; // TODO
         ResourceLocation material = Altar.MATERIAL; // TODO
         int lightLevel = 0; // TODO
-        return new Altar(enabled, name, isFemale(), isSlim(), lightLevel, items,
+        return new Altar(enabled, name, isFemale(), isSlim(), isSmall(), lightLevel, items,
                 material, getAltarPose(), isAltarPoseLocked());
     }
 
@@ -819,6 +821,11 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         setFlags((byte) (slim ? (flags | 0x02) : (flags & ~0x02)));
     }
 
+    public void setSmall(boolean small) {
+        byte flags = getFlags();
+        setFlags((byte) (small ? (flags | 0x04) : (flags & ~0x04)));
+    }
+
     @Override
     public void setCustomName(final Component name) {
         super.setCustomName(name);
@@ -839,6 +846,10 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
 
     public boolean isSlim() {
         return (getFlags() & 0x02) > 0;
+    }
+
+    public boolean isSmall() {
+        return (getFlags() & 0x04) > 0;
     }
 
     private byte getFlags() {

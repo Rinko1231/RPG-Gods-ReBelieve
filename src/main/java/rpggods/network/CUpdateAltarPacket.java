@@ -30,6 +30,7 @@ public class CUpdateAltarPacket {
     protected AltarPose pose = AltarPose.EMPTY;
     protected boolean female = false;
     protected boolean slim = false;
+    protected boolean small = false;
     protected String customName = "";
 
     public CUpdateAltarPacket() {
@@ -40,14 +41,16 @@ public class CUpdateAltarPacket {
      * @param pose        the StatuePose settings
      * @param female      true if the statue uses the female model
      * @param slim        true if the statue uses the slim model
+     * @param small       true if the statue uses the small model
      * @param customName the String name of the texture to use
      **/
     public CUpdateAltarPacket(final int entityId, final AltarPose pose,
-                              final boolean female, final boolean slim, final String customName) {
+                              final boolean female, final boolean slim, final boolean small, final String customName) {
         this.entityId = entityId;
         this.pose = pose;
         this.female = female;
         this.slim = slim;
+        this.small = small;
         this.customName = customName;
     }
 
@@ -62,8 +65,9 @@ public class CUpdateAltarPacket {
         final CompoundTag nbt = buf.readNbt();
         final boolean female = buf.readBoolean();
         final boolean slim = buf.readBoolean();
+        final boolean small = buf.readBoolean();
         final String customName = buf.readUtf(NAME_LEN);
-        return new CUpdateAltarPacket(id, new AltarPose(nbt), female, slim, customName);
+        return new CUpdateAltarPacket(id, new AltarPose(nbt), female, slim, small, customName);
     }
 
     /**
@@ -77,6 +81,7 @@ public class CUpdateAltarPacket {
         buf.writeNbt(msg.pose.serializeNBT());
         buf.writeBoolean(msg.female);
         buf.writeBoolean(msg.slim);
+        buf.writeBoolean(msg.small);
         String name = msg.customName;
         if (name.length() > NAME_LEN) {
             name = name.substring(0, NAME_LEN);
@@ -102,6 +107,7 @@ public class CUpdateAltarPacket {
                     altar.setAltarPose(message.pose);
                     altar.setFemale(message.female);
                     altar.setSlim(message.slim);
+                    altar.setSmall(message.small);
                     if (message.customName != null && !message.customName.isEmpty()) {
                         altar.setCustomName(Component.literal(message.customName));
                     }

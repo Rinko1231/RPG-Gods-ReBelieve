@@ -42,6 +42,8 @@ public final class PerkConditionContext {
     private final Optional<BlockState> blockState;
     /** A numeric amount associated with the event, if any (spell damage, healing, ...) **/
     private final Optional<Double> amount;
+    /** The registry id of the perk being tested, if known **/
+    private final Optional<ResourceLocation> perkId;
 
     /**
      * Constructs a new {@link PerkConditionContext} with the specified parameters.
@@ -74,6 +76,25 @@ public final class PerkConditionContext {
                                 Optional<ResourceLocation> data, Optional<Entity> entity,
                                 Optional<ItemStack> itemStack, Optional<BlockState> blockState,
                                 Optional<Double> amount) {
+        this(deity, player, favor, data, entity, itemStack, blockState, amount, Optional.empty());
+    }
+
+    /**
+     * Constructs a new {@link PerkConditionContext} with a numeric event amount and perk id.
+     * @param deity the deity associated with this {@link Perk}
+     * @param player the player
+     * @param favor the player favor
+     * @param data some arbitrary data as an ID
+     * @param entity the entity, if there is an entity associated with the {@link Perk}
+     * @param itemStack the item stack, if there is an item stack associated with the {@link Perk}
+     * @param blockState the block state, if there is a block state associated with the {@link Perk}
+     * @param amount a numeric amount associated with the event, if any
+     * @param perkId the registry id of the perk being tested, if known
+     **/
+    public PerkConditionContext(ResourceLocation deity, ServerPlayer player, IFavor favor,
+                                Optional<ResourceLocation> data, Optional<Entity> entity,
+                                Optional<ItemStack> itemStack, Optional<BlockState> blockState,
+                                Optional<Double> amount, Optional<ResourceLocation> perkId) {
         this.deity = deity;
         this.player = player;
         this.favor = favor;
@@ -82,6 +103,7 @@ public final class PerkConditionContext {
         this.itemStack = itemStack;
         this.blockState = blockState;
         this.amount = amount;
+        this.perkId = perkId;
     }
 
     /** The deity ID associated with this {@link Perk} **/
@@ -137,6 +159,11 @@ public final class PerkConditionContext {
     /** @return a numeric amount associated with the event, if any **/
     public Optional<Double> getAmount() {
         return amount;
+    }
+
+    /** @return the registry id of the perk being tested, if known **/
+    public Optional<ResourceLocation> getPerkId() {
+        return perkId;
     }
 
     /** @return the registry access of the player level **/

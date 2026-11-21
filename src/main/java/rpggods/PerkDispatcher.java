@@ -366,7 +366,8 @@ public final class PerkDispatcher {
             return false;
         }
         // validate condition
-        final PerkConditionContext conditionContext = new PerkConditionContext(perk.getDeity(), player, favor, data, entity, itemStack, blockState, amount);
+        final ResourceLocation perkId = Perk.getRegistry(player.level().registryAccess()).getKey(perk);
+        final PerkConditionContext conditionContext = new PerkConditionContext(perk.getDeity(), player, favor, data, entity, itemStack, blockState, amount, Optional.ofNullable(perkId));
         if (!perk.getCondition().test(conditionContext)) {
             return false;
         }

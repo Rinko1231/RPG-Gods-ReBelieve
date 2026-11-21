@@ -109,6 +109,8 @@ public final class RGData {
         if(original.isPresent() && copy.isPresent()) {
             copy.ifPresent(f -> f.deserializeNBT(original.orElse(Favor.EMPTY).serializeNBT()));
         }
+        // keep spell-event usage counters across respawns
+        rpggods.util.SpellUsage.copy(event.getOriginal(), event.getEntity());
     }
 
     /**

@@ -14,6 +14,7 @@ Registry: `deity:altar` — entry ID `namespace:name`
 | `name` | string | empty | Deity ID (e.g. `"greek:athena"`) or a custom display name. Strings that parse as a resource location are treated as deities. |
 | `female` | boolean | `false` | Use the female model. Overridden to `true` when the linked deity's `gender` is `female`. |
 | `slim` | boolean | `false` | Use slim arms. |
+| `small` | boolean | `false` | Use the small (baby-sized) model. |
 | `light` | integer 0–15 | `0` | Emits this light level while placed (an invisible light block is placed above the altar). |
 | `items` | object | empty | Equipment and locks, see below. |
 | `material` | resource location | `minecraft:stone` | Reserved for future use. |

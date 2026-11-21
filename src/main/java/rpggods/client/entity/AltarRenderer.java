@@ -103,6 +103,10 @@ public class AltarRenderer extends LivingEntityRenderer<AltarEntity, AltarModel>
         getModel().translateRotateAroundBody(pose.get(HumanoidPart.ROOT), pose.get(HumanoidPart.BODY), poseStack, partialTicks);
         // translate and rotate so the model is not upside-down
         poseStack.translate(0.0F, 2.0F + baseHeight, 0.0F);
+        // the small statue uses a baby-sized model (half scale)
+        if (entityIn.isSmall()) {
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+        }
         poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
         if (rendertype != null) {
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);

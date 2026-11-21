@@ -92,9 +92,9 @@
 | `rpggods:combat_start` | `entity`?：实体 holder set | 玩家进入战斗（可限定对手）。 |
 | `rpggods:ritual` | `item`：物品谓词 | 在神坛前焚烧的物品匹配。 |
 | `rpggods:level_change` | `direction`：`level_up`/`level_down`，`deity`?：ID | 玩家恩宠等级变化。 |
-| `rpggods:spell_cast` | `spell`?：法术 ID | 施放法术（需要 Iron's Spellbooks）。 |
-| `rpggods:spell_damage` | `spell`?：法术 ID，`min_amount`?：整数，`max_amount`?：整数 | 法术造成伤害；数值为护甲减免前的伤害。 |
-| `rpggods:spell_heal` | `min_amount`?：整数，`max_amount`?：整数 | 法术治疗；数值为治疗量。 |
+| `rpggods:spell_cast` | `spell`?：法术 ID，`maxuses`?：整数 | 施放法术（需要 Iron's Spellbooks）。 |
+| `rpggods:spell_damage` | `spell`?：法术 ID，`min_amount`?：整数，`max_amount`?：整数，`maxuses`?：整数 | 法术造成伤害；数值为护甲减免前的伤害。 |
+| `rpggods:spell_heal` | `min_amount`?：整数，`max_amount`?：整数，`maxuses`?：整数 | 法术治疗；数值为治疗量。 |
 
 #### `rpggods:location`
 
@@ -147,7 +147,8 @@ Iron's Spellbooks 联动触发；未安装铁魔法时它们不会生效。
   与动作；真正加恩宠的是 `rpggods:favor` 动作。
 * 频率由恩赐的 `cooldown` / `cooldown_category` 控制。测试时可设 `"cooldown": 0`
   表示不限；建议每种事件用不同的 `cooldown_category`，避免施法冷却挡住伤害/治疗恩赐。
-* 法术事件没有 `maxuses` 那样的次数上限；需要限制时用恩赐冷却或小于 `1.0` 的 `chance`。
+* `maxuses` 是可选的“每名玩家终身次数上限”。不写（或写 `0`/负数）表示无限；
+  执行 `/favor reset` 会清空计数。
 * 支持“每次命中达到多少伤害”的阈值设计；若要“累计造成 X 点伤害加 1 点”需要持久化
   计数器，目前没有内置。
 

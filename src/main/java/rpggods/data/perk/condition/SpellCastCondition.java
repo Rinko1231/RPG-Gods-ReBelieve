@@ -12,31 +12,42 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import rpggods.RGRegistry;
+import rpggods.util.SpellUsage;
 
 import java.util.Optional;
 
 /**
  * Matches when a spell is cast. The optional {@code spell} field limits the condition to a
- * single spell id, for example {@code irons_spellbooks:firebolt}.
+ * single spell id, for example {@code irons_spellbooks:firebolt}. {@code maxuses} limits how
+ * many times the perk can trigger for a player (omitted or <= 0 is unlimited).
  */
 public class SpellCastCondition extends PerkCondition {
 
     public static final Codec<SpellCastCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.optionalFieldOf("spell").forGetter(o -> o.spell)
+            ResourceLocation.CODEC.optionalFieldOf("spell").forGetter(o -> o.spell),
+            Codec.INT.optionalFieldOf("maxuses").forGetter(o -> o.maxUses)
     ).apply(instance, SpellCastCondition::new));
 
     private final Optional<ResourceLocation> spell;
+    private final Optional<Integer> maxUses;
 
-    public SpellCastCondition(Optional<ResourceLocation> spell) {
+    public SpellCastCondition(Optional<ResourceLocation> spell, Optional<Integer> maxUses) {
         this.spell = spell;
+        this.maxUses = maxUses;
     }
 
     @Override
     public boolean test(PerkConditionContext context) {
-        if (spell.isEmpty()) {
-            return true;
+        if (!spell.isEmpty() && !context.getData().map(spell.get()::equals).orElse(false)) {
+            return false;
         }
-        return context.getData().map(spell.get()::equals).orElse(false);
+        if (maxUses.isPresent() && maxUses.get() > 0) {
+            if (!SpellUsage.canUse(context.getPlayer(), context.getPerkId().orElse(null), maxUses.get())) {
+                return false;
+            }
+            SpellUsage.addUse(context.getPlayer(), context.getPerkId().orElse(null));
+        }
+        return true;
     }
 
     @Override
@@ -54,6 +65,10 @@ public class SpellCastCondition extends PerkCondition {
 
     public Optional<ResourceLocation> getSpell() {
         return spell;
+    }
+
+    public Optional<Integer> getMaxUses() {
+        return maxUses;
     }
 
     static Component spellName(final ResourceLocation spell) {

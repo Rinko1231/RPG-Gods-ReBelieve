@@ -37,7 +37,10 @@ remove the two JEI lines from `build.gradle` if you do not want it.
 * Ported the Favor GUI (`FavorScreen`) to 1.20.1 `GuiGraphics` and the new data
   model, and ported `ScrollButton` to the 1.20.1 button API.
 * Ported `AltarScreen`, `AltarEntity`, `AltarItem`, `ScrollItem` and the
-  brazier/light block to registry access; restored the `female` altar property.
+  brazier/light block to registry access; restored the `female` altar property,
+  added the slim and small (baby-sized) statue models, and added the Spells
+  page for spell-event perks.
+* Spell-event conditions support an optional `maxuses` cap (omitted = unlimited).
 * Added a creative tab (`RPG Gods`) containing the Scroll, Brazier and one
   altar item per registered altar, so the mod is usable without commands.
 * Fixed the loot modifier ids (`rpggods:crop_yield`), added startup logging of

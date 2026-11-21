@@ -405,6 +405,7 @@ public class FavorCommand {
         for (final ServerPlayer player : players) {
             favor = RPGGods.getFavor(player).orElse(Favor.EMPTY);
             favor.reset();
+            rpggods.util.SpellUsage.clear(player);
         }
         // send command feedback
         if (players.size() == 1) {
