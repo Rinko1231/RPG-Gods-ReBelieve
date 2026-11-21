@@ -1,14 +1,14 @@
 modLoader="javafml"
 loaderVersion="${loader_version_range}"
 license="${mod_license}"
-issueTrackerURL="https://github.com/skyjay1/RPG-Gods/issues"
+issueTrackerURL="https://github.com/Rinko1231/RPG-Gods-ReBelieve/issues"
 
 [[mods]]
     modId="${mod_id}"
     version="${mod_version}"
     displayName="${mod_name}"
     #updateJSONURL="https://change.me.example.invalid/updates.json"
-    displayURL="https://www.curseforge.com/minecraft/mc-mods/rpg-gods"
+    #displayURL="https://www.curseforge.com/minecraft/mc-mods/rpg-gods"
     credits="${mod_credits}"
     authors="${mod_authors}"
     displayTest="MATCH_VERSION"
