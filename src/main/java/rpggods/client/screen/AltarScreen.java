@@ -371,8 +371,8 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainerMenu> {
             entity.setSmall(small);
             entity.setAltarPose(this.pose);
         }
-        if(name.isPresent() && !nameField.isFocused() &&
-                (null == entity.getPlayerProfile() || !entity.getCustomName().getContents().equals(name.get()))) {
+        if(name.isPresent() && !nameField.isFocused()
+                && (entity.getCustomName() == null || !name.get().equals(entity.getCustomName().getString()))) {
             entity.setCustomName(Component.literal(name.get()));
         }
     }

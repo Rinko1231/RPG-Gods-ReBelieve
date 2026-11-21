@@ -103,6 +103,8 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
     private Optional<ResourceLocation> deity = Optional.empty();
     @Nullable
     private GameProfile playerProfile = null;
+    @Nullable
+    private String requestedProfileName = null;
 
     public long lastHit;
 
@@ -764,7 +766,14 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
     }
 
     private void updatePlayerProfile() {
-        SkullBlockEntity.updateGameprofile(this.playerProfile, g -> AltarEntity.this.playerProfile = g);
+        final GameProfile profile = this.playerProfile;
+        final String name = profile != null ? profile.getName() : null;
+        // only request the skin once per player name; failed lookups must not retry every tick
+        if (name != null && name.equals(this.requestedProfileName)) {
+            return;
+        }
+        this.requestedProfileName = name;
+        SkullBlockEntity.updateGameprofile(profile, g -> AltarEntity.this.playerProfile = g);
     }
 
     public boolean isArmorLocked() {
