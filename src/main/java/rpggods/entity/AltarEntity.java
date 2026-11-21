@@ -86,6 +86,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
     private static final EntityDataAccessor<Byte> FLAGS = SynchedEntityData.defineId(AltarEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> LOCKED = SynchedEntityData.defineId(AltarEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<CompoundTag> POSE = SynchedEntityData.defineId(AltarEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    private static final EntityDataAccessor<CompoundTag> PROFILE = SynchedEntityData.defineId(AltarEntity.class, EntityDataSerializers.COMPOUND_TAG);
 
     private static final String KEY_ALTAR = "Altar";
     private static final String KEY_DEITY = "Deity";
@@ -137,6 +138,7 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         this.getEntityData().define(FLAGS, (byte) 0);
         this.getEntityData().define(LOCKED, (byte) 0);
         this.getEntityData().define(POSE, new CompoundTag());
+        this.getEntityData().define(PROFILE, new CompoundTag());
     }
 
     @Override
@@ -152,6 +154,11 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
         }
         if (key.equals(POSE)) {
             this.setAltarPose(new AltarPose(getEntityData().get(POSE)));
+        }
+        if (key.equals(PROFILE)) {
+            final CompoundTag profileTag = getEntityData().get(PROFILE);
+            this.playerProfile = profileTag.isEmpty() ? null : NbtUtils.readGameProfile(profileTag);
+            this.requestedProfileName = this.playerProfile != null ? this.playerProfile.getName() : null;
         }
     }
 
@@ -761,19 +768,42 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
     }
 
     private void setPlayerProfile(@Nullable GameProfile profile) {
+        // do not replace an already resolved skin with a name-only profile
+        if (profile != null && this.playerProfile != null
+                && profile.getName() != null && profile.getName().equalsIgnoreCase(this.playerProfile.getName())
+                && this.playerProfile.getProperties().containsKey("textures")) {
+            return;
+        }
         this.playerProfile = profile;
-        this.updatePlayerProfile();
+        if (!this.level().isClientSide) {
+            this.getEntityData().set(PROFILE, profile != null
+                    ? NbtUtils.writeGameProfile(new CompoundTag(), profile)
+                    : new CompoundTag());
+            this.updatePlayerProfile();
+        }
     }
 
     private void updatePlayerProfile() {
         final GameProfile profile = this.playerProfile;
         final String name = profile != null ? profile.getName() : null;
-        // only request the skin once per player name; failed lookups must not retry every tick
-        if (name != null && name.equals(this.requestedProfileName)) {
+        if (name == null || name.isEmpty()) {
+            this.requestedProfileName = null;
+            return;
+        }
+        // only request the profile once per player name; failed lookups must not retry every tick
+        if (name.equals(this.requestedProfileName)) {
             return;
         }
         this.requestedProfileName = name;
-        SkullBlockEntity.updateGameprofile(profile, g -> AltarEntity.this.playerProfile = g);
+        SkullBlockEntity.updateGameprofile(profile, resolved -> {
+            if (resolved == null) {
+                return;
+            }
+            this.playerProfile = resolved;
+            if (!this.level().isClientSide) {
+                this.getEntityData().set(PROFILE, NbtUtils.writeGameProfile(new CompoundTag(), resolved));
+            }
+        });
     }
 
     public boolean isArmorLocked() {
@@ -845,7 +875,11 @@ public class AltarEntity extends LivingEntity implements ContainerListener {
                 final CompoundTag profileNBT = new CompoundTag();
                 profileNBT.putString("Name", sName);
                 setPlayerProfile(NbtUtils.readGameProfile(profileNBT));
+            } else {
+                setPlayerProfile(null);
             }
+        } else {
+            setPlayerProfile(null);
         }
     }
 

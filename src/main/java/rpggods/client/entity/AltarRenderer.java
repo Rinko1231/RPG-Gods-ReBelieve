@@ -37,7 +37,10 @@ import rpggods.util.altar.AltarPose;
 import rpggods.util.altar.HumanoidPart;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class AltarRenderer extends LivingEntityRenderer<AltarEntity, AltarModel> {
 
@@ -49,6 +52,8 @@ public class AltarRenderer extends LivingEntityRenderer<AltarEntity, AltarModel>
     public static final ModelLayerLocation ALTAR_OUTER_ARMOR_RESOURCE = new ModelLayerLocation(new ResourceLocation(RPGGods.MODID, "altar"), "outer_armor");
 
     private final Map<ResourceLocation, ResourceLocation> DEITY_TEXTURES = new HashMap<>();
+    private final Map<String, ResourceLocation> SKIN_TEXTURES = new HashMap<>();
+    private final Set<String> PENDING_SKINS = new HashSet<>();
 
     public AltarRenderer(final EntityRendererProvider.Context context) {
         super(context, new AltarModel(context.bakeLayer(ALTAR_MODEL_RESOURCE)), 0.5F);
@@ -153,11 +158,34 @@ public class AltarRenderer extends LivingEntityRenderer<AltarEntity, AltarModel>
         }
         // return player texture
         final GameProfile gameProfile = entity.getPlayerProfile();
-        if(gameProfile != null && gameProfile.getProperties().containsKey("textures")) {
+        if(gameProfile != null && gameProfile.getName() != null && !gameProfile.getName().isEmpty()) {
             Minecraft minecraft = Minecraft.getInstance();
+            final String skinKey = gameProfile.getName().toLowerCase(Locale.ROOT);
+            final ResourceLocation cached = SKIN_TEXTURES.get(skinKey);
+            if (cached != null) {
+                return cached;
+            }
+            // CustomSkinLoader patches this method to resolve skins by name, even when the
+            // profile has no textures property yet. Do not gate this behind that property.
             Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = minecraft.getSkinManager().getInsecureSkinInformation(gameProfile);
             if(map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
-                return minecraft.getSkinManager().registerTexture(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
+                final MinecraftProfileTexture texture = map.get(MinecraftProfileTexture.Type.SKIN);
+                final ResourceLocation location = minecraft.getSkinManager().registerTexture(texture, MinecraftProfileTexture.Type.SKIN);
+                SKIN_TEXTURES.put(skinKey, location);
+                return location;
+            }
+            // the server resolves the profile UUID asynchronously; fetch its textures once complete
+            if(gameProfile.getId() != null && PENDING_SKINS.add(skinKey)) {
+                try {
+                    minecraft.getSkinManager().registerSkins(gameProfile, (type, location, texture) -> {
+                        if (type == MinecraftProfileTexture.Type.SKIN) {
+                            SKIN_TEXTURES.put(skinKey, location);
+                            PENDING_SKINS.remove(skinKey);
+                        }
+                    }, false);
+                } catch (Exception exception) {
+                    PENDING_SKINS.remove(skinKey);
+                }
             }
         }
         // return default texture
