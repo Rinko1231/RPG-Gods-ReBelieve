@@ -98,6 +98,8 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
+    implementation "curse.maven:customskinloader-286924:9023814"
+
     // optional Iron's Spellbooks integration (attribute action + spell events)
     compileOnly fg.deobf("curse.maven:irons-spells-n-spellbooks-855414:9702213")
     compileOnly fg.deobf("curse.maven:curios-309927:6418456")

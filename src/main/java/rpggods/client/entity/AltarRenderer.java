@@ -102,8 +102,8 @@ public class AltarRenderer extends LivingEntityRenderer<AltarEntity, AltarModel>
         // rotate around body and translate according to pose offsets
         getModel().translateRotateAroundBody(pose.get(HumanoidPart.ROOT), pose.get(HumanoidPart.BODY), poseStack, partialTicks);
         // translate and rotate so the model is not upside-down
-        // the small model is scaled by 0.5, so lower the pivot by one block to keep its feet on the ground
-        poseStack.translate(0.0F, 2.0F + baseHeight - (entityIn.isSmall() ? 1.0F : 0.0F), 0.0F);
+        // the small model is scaled by 0.5, so lower the pivot by half a block to keep its feet on the ground
+        poseStack.translate(0.0F, 2.0F + baseHeight - (entityIn.isSmall() ? 0.5F : 0.0F), 0.0F);
         // the small statue uses a baby-sized model (half scale)
         if (entityIn.isSmall()) {
             poseStack.scale(0.5F, 0.5F, 0.5F);
@@ -112,7 +112,7 @@ public class AltarRenderer extends LivingEntityRenderer<AltarEntity, AltarModel>
         if (rendertype != null) {
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);
             getModel().render(entityIn, poseStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY,
-                    entityIn.isFemale(), entityIn.isSlim(), 1.0F, 1.0F, 1.0F, 1.0F);
+                    entityIn.isFemale(), entityIn.isSlim(), entityIn.isSmall(), 1.0F, 1.0F, 1.0F, 1.0F);
         }
 
         // render layers

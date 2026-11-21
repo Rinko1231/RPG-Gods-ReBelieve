@@ -144,9 +144,18 @@ public class AltarModel extends AltarArmorModel {
     }
 
     public void render(final AltarEntity entity, PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn,
-                       final boolean female, final boolean slim, float red, float green, float blue, float alpha) {
+                       final boolean female, final boolean slim, final boolean small,
+                       float red, float green, float blue, float alpha) {
         // update which parts can be shown for male/female
         this.bodyChest.visible = female;
+        // baby proportions: a larger head relative to the halved body
+        final float headScale = small ? 1.4F : 1.0F;
+        this.head.xScale = headScale;
+        this.head.yScale = headScale;
+        this.head.zScale = headScale;
+        this.hat.xScale = headScale;
+        this.hat.yScale = headScale;
+        this.hat.zScale = headScale;
         // determine which parts this block will be rendering
         final Iterable<ModelPart> parts = getParts();
         final Iterable<ModelPart> arms = (slim ? getSlimArms() : getArms());
